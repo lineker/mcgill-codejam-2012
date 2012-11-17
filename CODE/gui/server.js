@@ -29,7 +29,7 @@ app.get('/', function (req, res) {
 });
 
 app.get('/:path', function (req, res) {
-    res.sendfile(req.params.path);
+    res.sendfile(req.params.path + ".html");
 });
 
 /* Start server */

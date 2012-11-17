@@ -7,18 +7,26 @@ var chart = new Highcharts.Chart({
             load: function() {
 
                 // set up the updating of the chart each second
-                var series = this.series[0];
+                var price = this.series[0],
+                    sta   = this.series[1],
+                    lta   = this.series[2];
+
                 setInterval(function() {
                     var x = (new Date()).getTime(),
                         // current time
-                        y = Math.random();
-                    series.addPoint([x, y], true, true);
+                        y1 = Math.random(),
+                        y2 = Math.random();
+                        y3 = Math.random();
+
+                    price.addPoint([x, y1], true, true);
+                    sta.addPoint([x, y2], true, true);
+                    lta.addPoint([x, y3], true, true);
                 }, 1000);
             }
         }
     },
     title: {
-        text: 'Linear Weighted Moving Average (LWMA)',
+        text: 'Simple Moving Average (SMA)',
         style: {
             margin: '10px 100px 0 0' // center it
         }
@@ -66,6 +74,34 @@ var chart = new Highcharts.Chart({
     },
     series: [{
         name: 'Random data',
+        data: (function() {
+            // generate an array of random data
+            var data = [],
+                time = (new Date()).getTime(),
+                i;
+            for (i = -19; i <= 0; i++) {
+                data.push({
+                    x: time + i * 1000,
+                    y: Math.random()
+                });
+            }
+            return data;
+        })()},{
+        name: 'More data',
+        data: (function() {
+            // generate an array of random data
+            var data = [],
+                time = (new Date()).getTime(),
+                i;
+            for (i = -19; i <= 0; i++) {
+                data.push({
+                    x: time + i * 1000,
+                    y: Math.random()
+                });
+            }
+            return data;
+        })()},{
+        name: 'Even more data',
         data: (function() {
             // generate an array of random data
             var data = [],
