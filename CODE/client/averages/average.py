@@ -4,6 +4,8 @@ Interface for all Average classes.
 Provides a standard way to access and update data for a particular algorithm. 
 """
 
+from collections import deque
+
 class Average:
     """
     Attributes:
@@ -24,7 +26,7 @@ class Average:
         self.average = 0
         self.tick = 0
         self.set_size = set_size
-        self.points = []
+        self.points = deque([])
 
     def update(self, point):
         """
