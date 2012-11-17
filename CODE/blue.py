@@ -24,14 +24,23 @@ except socket.error, msg:
  
 sock.send("H\n")
 
+min = 0
+max = 0
 
-
-data = sock.recv(36)
+data = sock.recv(1024)
 string = ""
+string_del = ""
+buff = []
 while len(data):
-  data = sock.recv(36)
-  print data
+  data = sock.recv(1024)
+  string += data
+  string_del = string.split("|")
 sock.close()
 
- 
+
+map(float, buff)
+max = buff.size
+
+# send buff
+
 sys.exit(0)
