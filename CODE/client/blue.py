@@ -72,9 +72,6 @@ def socketio(*arg, **kw):
     return "out"
 
 if __name__ == '__main__':
-    server.SocketIOServer(
-        ('localhost', 9090), app, policy_server=False).serve_forever()
-    self.sock.send("H\n")
     """
     Server to receive the data from the MS exchange, and to output the processed data from the
     strategy manager to the python server, which sends to the web server.
@@ -100,4 +97,8 @@ if __name__ == '__main__':
     except socket.error, msg:
       sys.stderr.write("[ERROR] %s\n" % msg[1])
       sys.exit(2)
+    server.SocketIOServer(
+        ('localhost', 9090), app, policy_server=False).serve_forever()
+    self.sock.send("H\n")
+    
 
