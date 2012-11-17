@@ -26,6 +26,7 @@ class Average:
 
         self.average = 0
         self.time = 0
+        self.price = None
         self.set_size = set_size
         self.points = deque([])
 
@@ -48,6 +49,8 @@ class Average:
             self.average = self.add_successive_points(float(point))
 
         self.time += 1
+        self.price = point
+
         return self.average
 
     def add_successive_points(self, point):
@@ -86,4 +89,7 @@ class Average:
         Serializes moving average data to JSON.
         """
 
-        return dumps({"time": self.time, "average": self.average})
+        return dumps({
+                "price": self.price, 
+                "time": self.time, 
+                "average": self.average})
