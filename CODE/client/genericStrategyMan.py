@@ -12,7 +12,7 @@ import Queue
 
 # new BuySellManager
 
-class GenericStrategyMan( Thread.threading ):
+class GenericStrategyMan( threading.Thread ):
 
 	def __init__(self, threadID, name, inq, clock, outq, transQ):
 
@@ -33,11 +33,11 @@ class GenericStrategyMan( Thread.threading ):
 			transactions -- array of trade records
 		"""
 		threading.Thread.__init__(self)
-        self.tQueue = transQ
-        self.threadID = threadID
-        self.name = name
-        self.inputQueue = inq
-        self.outputQueue = outq
+       		self.tQueue = transQ
+        	self.threadID = threadID
+        	self.name = name
+        	self.inputQueue = inq
+        	self.outputQueue = outq
 		self.strategyType = ""
 		self.strategies = {'slow': None, 'fast': None }
 		self.tick = clock
@@ -45,10 +45,10 @@ class GenericStrategyMan( Thread.threading ):
 		self.exitFlag = False
 		""" 
 		PORTS:
-			sma at 3001
-			lwma at 3002
-			ema at 3003
-			tma at 3004
+		sma at 3001
+		lwma at 3002
+		ema at 3003
+		tma at 3004
 		"""
 		self.averages = {'slow': None, 'fast': None}
 		self.trend = 0
@@ -59,10 +59,10 @@ class GenericStrategyMan( Thread.threading ):
 	def run(self):
 		print "Starting " + self.strategyType
 		while not self.exitFlag:
-	        if not self.inputQueue.empty():
-	            data = self.inputQueue.get()
-	            self.tick += 1 
-	           	self.process(self, data)
+	        	if not self.inputQueue.empty():
+	            		data = self.inputQueue.get()
+	            		self.tick += 1 
+	            		self.process(self, data)
 	  
 
 	def process(self, point):

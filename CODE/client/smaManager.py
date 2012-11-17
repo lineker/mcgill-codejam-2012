@@ -3,10 +3,10 @@ import sys
 from averages import Simple
 from trade_record import TradeRecord
 import socket
-from genericStrategyManager import GenericStrategyManager
+from genericStrategyMan import GenericStrategyMan
 import threading
 
-class smaManager(GenericStrategyManager):
+class smaManager(GenericStrategyMan):
 
 	def __init__(self, threadID, name, inq, clock, outq, transQ):
 		super(threadID, name, inq, clock, outq, transQ)

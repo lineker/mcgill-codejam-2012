@@ -7,7 +7,7 @@ import Queue
 import threading
 from strategyman import StrategyMan
 from time import time
-
+import smaManager, tmaManager, lwmaManager, emaManager, genericStrategyMan
 
 
 stratMan = StrategyMan()
@@ -21,7 +21,7 @@ except socket.error, msg:
   sys.exit(1)
  
 try:
-  exchange_sock.connect((self.HOST, self.PORT))
+  exchange_sock.connect((HOST, PORT))
 except socket.error, msg:
   sys.stderr.write("[ERROR] %s\n" % msg[1])
   sys.exit(2)
