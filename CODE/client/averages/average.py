@@ -33,7 +33,10 @@ class Average:
         and also when we are adding successive values.
 
         Parameters:
-            point -- the next value obtained in our data set
+            point   -- the next value obtained in our data set
+
+        Returns:
+            average -- the newly updated average after adding the point
         """
 
         if self.points < self.set_size:
