@@ -30,7 +30,7 @@ class StrategyMan:
 		self.tick = 0
 		self.HOST = 'localhost'
 		self.PORT = 3001
-		self.averages = {'sma': {'slow': None, 'fast': None}, 'lwma': {'slow': None, 'fast': None}, 'ema': {'slow': None, 'fast': None}, 'tma': {'slow': None, 'fast': None}}
+		self.averages = {'sma': {'slow': None, 'fast': None}, 'tma': {'slow': None, 'fast': None}, 'lwma': {'slow': None, 'fast': None}, 'ema': {'slow': None, 'fast': None}}
 		self.trend = {'sma': 0, 'lwma': 0, 'ema': 0, 'tma': 0}
 
 		self.mSchedule = [[1, 2, 1, 2], [3, 4, 3, 4], [1, 2, 1, 2], [1, 2, 1, 2], [3, 4, 3, 4], [3, 4, 3, 4], [5, 6, 5, 6], [7, 8, 7, 8]]
