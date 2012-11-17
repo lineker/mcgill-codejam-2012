@@ -64,17 +64,16 @@ class StrategyMan:
 			self.averages[strat]['fast'] = self.strategies[strat]['fast'].update(point)
 
 		result = self.detect_crossover(self.tick)
+		
 		if result:
 			if result['action'] == 0:
 				# buy
 				self.buy()
-				self.hasBought = True
 				self.store_record(0, self.tick, result['sType'])
 				
 			elif result['action'] == 1:
 				# sell
 				self.sell()
-				self.hasBought = False
 				self.store_record(1, self.tick, result['sType'])	
 
 		# send data to GUI
@@ -147,7 +146,7 @@ class StrategyMan:
 		else:
 			newRecord = TradeRecord(manID, "B", time, strategyType)
 
-		newRecord.send
+		newRecord.send()
 
 	def getManager(self, tick, sType):
 		"""
