@@ -5,15 +5,19 @@ class Exponential(Average):
     Similar to the LWMA, but applies exponentially decreasing weighting factors
     to the data points, giving more importance to the latest data points.
     """
-    
+
     def add_successive_points(self, point):
         """
         Formula:
             EMA_t = EMA_{t-1} + a * (price_t - EMA_{t-1})
                 where a = 2 / (N+1)
         """
-        
-        pass
+
+        self.points.append(point)
+        self.a = (2/(self.set_size+1))
+        self.average = self.average + self.a * (points.popleft() - self.average)
+
+        return self.average
 
     def add_initial_points(self, point):
         """
