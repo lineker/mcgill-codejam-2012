@@ -35,7 +35,47 @@ class Data(BaseNamespace, BroadcastMixin):
             exchange_sock.send("H\n") # start the feed
             print "started ms exchange socket"
             while True:
-                self.emit('data', { "time": time() * 1000, "value": random() })
+                data = exchange_sock.recv(46)
+                string = ""
+                string_del = ""
+                buff = []
+                stor = []
+                index = -1
+                last_string = ""
+                while len(data):
+                    string_del = ""
+                    if last_string != "" and last_string != "C":
+                        data = last_string + data
+                        last_string = ""
+                        
+                    string_del = data.split("|")
+                    index = data.rfind("|")
+
+                    if index != -1 & (index + 1) < len(data):
+                        last_string = string_del.pop()
+                    
+                    #print string_del
+                    stor[len(stor):] = string_del
+
+                    if len(string_del) > 0:
+                        try:
+                            string_del.remove("")
+                            #detect half-read values
+                            #cut = string_del.
+
+                        except ValueError:
+                            print ""
+                        buff[0:] = map(float, string_del)
+                    print buff
+                    for point in buff:
+                        # pass point to strategyman
+                        self.stratMan.process(point)
+                        # get point and averages and send it
+                        self.emit('data', { "time": time() * 1000, "value": random() })
+                        gevent.sleep(0.5) # why?
+
+                    data = sock.recv(46)    
+                #self.emit('data', { "time": time() * 1000, "value": random() })
                 gevent.sleep(0.5)
 
         self.spawn(generate_data)
