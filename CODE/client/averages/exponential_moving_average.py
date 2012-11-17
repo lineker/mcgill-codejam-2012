@@ -14,8 +14,8 @@ class Exponential(Average):
         """
 
         self.points.append(point)
-        self.a = (2/(self.set_size+1))
-        self.average = self.average + self.a * (points.popleft() - self.average)
+        a = 2 / (self.set_size + 1))
+        self.average = self.average + a * (point - self.average)
 
         return self.average
 
@@ -24,5 +24,7 @@ class Exponential(Average):
         Because N and t are not dependent on each other in this formula,
         we can let EMA_1 = price_1, then use the formula for all t > 1.
         """
-
-        return add_successive_points(point)
+        if self.time == 0:
+            return point
+        else:
+            return add_successive_points(point)
