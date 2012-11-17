@@ -14,7 +14,7 @@ class Triangular(Average):
 
         numerator = 0.0
         for i in xrange(1, len(self.points) + 1):
-            numerator += simple_moving_average(self.time - self.set_size + i)
+            numerator += self.simple_moving_average(self.time - self.set_size + i)
 
         return numerator/self.set_size
 
@@ -28,7 +28,7 @@ class Triangular(Average):
         
         numerator = 0.0
         for i in xrange(1, len(self.points) + 1):
-            numerator += simple_moving_average(i)
+            numerator += self.simple_moving_average(i)
         
         return numerator/len(self.points)
 

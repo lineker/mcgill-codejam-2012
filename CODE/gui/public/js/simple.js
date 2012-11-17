@@ -21,7 +21,7 @@ var chart = new Highcharts.Chart({
                     price.addPoint([x, y1], true, true);
                     sta.addPoint([x, y2], true, true);
                     lta.addPoint([x, y3], true, true);
-                }, 1000);
+                }, 500);
             }
         }
     },
@@ -57,29 +57,24 @@ var chart = new Highcharts.Chart({
     },
     plotOptions: {
         spline: {
-            dataLabels: {
-                enabled: false,
-                formatter: function() {
-                    // return this.series.name;
-                    if (!this.series.inc) this.series.inc = 1;
-
-                    if (this.series.inc >= parseInt(this.series.data.length)) {
-                        this.series.inc = 0;
-                        return this.point.y;
-                    }
-                    this.series.inc++;
-                }
-            }
-        }
+            marker: {
+                enabled: false
+            },
+            animation: {
+                duration: 500,
+                easing: "swing"
+            },
+            enableMouseTracking: false
+        },
+        
     },
     series: [{
-        name: 'Random data',
         data: (function() {
             // generate an array of random data
             var data = [],
                 time = (new Date()).getTime(),
                 i;
-            for (i = -19; i <= 0; i++) {
+            for (i = -29; i <= 0; i++) {
                 data.push({
                     x: time + i * 1000,
                     y: Math.random()
@@ -87,13 +82,12 @@ var chart = new Highcharts.Chart({
             }
             return data;
         })()},{
-        name: 'More data',
         data: (function() {
             // generate an array of random data
             var data = [],
                 time = (new Date()).getTime(),
                 i;
-            for (i = -19; i <= 0; i++) {
+            for (i = -29; i <= 0; i++) {
                 data.push({
                     x: time + i * 1000,
                     y: Math.random()
@@ -101,13 +95,12 @@ var chart = new Highcharts.Chart({
             }
             return data;
         })()},{
-        name: 'Even more data',
         data: (function() {
             // generate an array of random data
             var data = [],
                 time = (new Date()).getTime(),
                 i;
-            for (i = -19; i <= 0; i++) {
+            for (i = -29; i <= 0; i++) {
                 data.push({
                     x: time + i * 1000,
                     y: Math.random()

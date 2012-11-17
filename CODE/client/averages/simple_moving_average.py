@@ -11,7 +11,7 @@ class Simple(Average):
             SMA_t = SMA_{t-1} - (price_{t-N} / N) + (price_t / N)
         """
 
-        self.average -= (self.points.popleft()) / self.set_size
+        self.average -= (self.points.pop(0)) / self.set_size
         self.average += point / self.set_size
 
         self.points.append(point)
