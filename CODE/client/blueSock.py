@@ -1,7 +1,8 @@
 from gevent import monkey; monkey.patch_all()
 
 import gevent
-
+from strategyman import StrategyMan
+import socket
 from time import time
 from random import random
 from bottle import Bottle, request
@@ -26,7 +27,7 @@ class Data(BaseNamespace, BroadcastMixin):
               sys.exit(1)
              
             try:
-              exchange_sock.connect((self.HOST, self.PORT))
+              exchange_sock.connect((HOST, PORT))
             except socket.error, msg:
               sys.stderr.write("[ERROR] %s\n" % msg[1])
               sys.exit(2)
