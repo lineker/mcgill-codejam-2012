@@ -188,6 +188,6 @@ class StrategyMan:
 	def getTransactions(self):
 		return self.transactions
 
-
-
+	def getAverages(self):
+		return self.averages
 
