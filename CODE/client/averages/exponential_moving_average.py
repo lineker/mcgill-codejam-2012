@@ -14,7 +14,7 @@ class Exponential(Average):
         """
 
         self.points.append(point)
-        a = 2 / (self.set_size + 1))
+        a = 2 / (self.set_size + 1)
         self.average = self.average + a * (point - self.average)
 
         return self.average
