@@ -19,8 +19,26 @@ class Blue(BaseNamespace, BroadcastMixin):
 
     def on_ready(self):
         def generate_data():
+            # Get connection to the MS exchange on exchange_sock
+            stratMan = StrategyMan()
+            HOST = 'localhost'
+            PORT = 3000
+
+            try:
+              exchange_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            except socket.error, msg:
+              sys.stderr.write("[ERROR] %s\n" % msg[1])
+              sys.exit(1)
+             
+            try:
+              exchange_sock.connect((self.HOST, self.PORT))
+            except socket.error, msg:
+              sys.stderr.write("[ERROR] %s\n" % msg[1])
+              sys.exit(2)
+
+            exchange_sock.send("H\n") # start the feed
             while True:
-                data = self.sock.recv(46)
+                data = exchange_sock.recv(46)
                 string = ""
                 string_del = ""
                 buff = []
@@ -57,7 +75,7 @@ class Blue(BaseNamespace, BroadcastMixin):
                         self.stratMan.process(point)
                         # get point and averages and send it
                         self.emit('data', { "time": time() * 1000, "value": random() })
-                        gevent.sleep(0.5)
+                        gevent.sleep(0.5) # why?
 
                     data = sock.recv(46)    
 
@@ -72,33 +90,8 @@ def socketio(*arg, **kw):
     return "out"
 
 if __name__ == '__main__':
-    """
-    Server to receive the data from the MS exchange, and to output the processed data from the
-    strategy manager to the python server, which sends to the web server.
-
-    Attributes:
-      stratMan -- the reference to the strategy manager
-      HOST -- the host namespace of the MS exchange
-      PORT -- the port name for connection to the MS exchange
-    """
-
-    self.stratMan = StrategyMan()
-    self.HOST = 'localhost'
-    self.PORT = 3000
-
-    try:
-      self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    except socket.error, msg:
-      sys.stderr.write("[ERROR] %s\n" % msg[1])
-      sys.exit(1)
-     
-    try:
-      self.sock.connect((self.HOST, self.PORT))
-    except socket.error, msg:
-      sys.stderr.write("[ERROR] %s\n" % msg[1])
-      sys.exit(2)
     server.SocketIOServer(
         ('localhost', 9090), app, policy_server=False).serve_forever()
-    self.sock.send("H\n")
+    
     
 
