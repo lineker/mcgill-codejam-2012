@@ -2,6 +2,7 @@
 import sys
 from averages import Simple
 from trade_record import TradeRecord
+import socket
 
 class StrategyMan:
 
@@ -22,7 +23,7 @@ class StrategyMan:
 		self.tick = 0
 		self.HOST = 'localhost'
 		self.PORT = 3001
-		self.averages = {}
+		self.averages = {'sma': {'slow': None, 'fast': None}}
 		self.hasBought = False
  		
 	def process(self, point):
@@ -61,9 +62,9 @@ class StrategyMan:
 			1 -- if time to sell
 		"""
 		for strat in self.strategies:
-			if self.averages[strat]['fast'] >= self.averages[strat]['slow'] && !self.hasBought:
+			if (self.averages[strat]['fast'] >= self.averages[strat]['slow'] and not self.hasBought):
 				return 0
-			elif self.averages[strat]['fast'] <= self.averages[strat]['slow'] && self.hasBought:
+			elif (self.averages[strat]['fast'] <= self.averages[strat]['slow'] and self.hasBought):
 				return 1
 			else:
 				return -1 # no crossover
@@ -80,7 +81,7 @@ class StrategyMan:
 
 		self.store_record(0, self.tick)
 
-	def send(cmd):
+	def send(self, cmd):
 		"""
 		Sends the given command to the MS exchange using correct port and HOST
 
@@ -101,11 +102,11 @@ class StrategyMan:
 		  sys.stderr.write("[ERROR] %s\n" % msg[1])
 		  sys.exit(2)
 
-		sock.send(command + "\n")
+		sock.send(cmd + "\n")
 		
 		sock.close()
 
-	def store_record(actionType, time):
+	def store_record(self, actionType, time):
 		"""
 		Store the action that took place at what time and get the manager
 		Triggers the record to send itself to the Silanus API
@@ -115,7 +116,7 @@ class StrategyMan:
 			actionType: 1 -- sell
 		"""
 
-		manID # get the manager ID
+		manID = 0 # get the manager ID
 
 		if actionType:
 			# add the new trade to the record
