@@ -49,7 +49,7 @@ class Average:
             self.average = self.add_successive_points(float(point))
 
         self.time += 1
-        self.price = point
+        self.price = float(point)
 
         return self.average
 
