@@ -8,7 +8,7 @@ class Simple(Average):
     def add_successive_points(self, point):
         """
         Formula:
-            SMA_t = SMA_{t-1} - (price_{t-N}/N) + (price_t/N)
+            SMA_t = SMA_{t-1} - (price_{t-N} / N) + (price_t / N)
         """
 
         self.average -= (self.points.popleft()) / self.set_size
@@ -22,7 +22,7 @@ class Simple(Average):
         """
         Formula:
             for some t <= N:
-                SMA_t = (price_t + price_{t-1} + ... + price_1)/t
+                SMA_t = (price_t + price_{t-1} + ... + price_1) / t
         """
 
         self.points.append(point)
