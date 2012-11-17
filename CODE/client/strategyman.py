@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 import sys
-from averages import Simple
+from averages import Simple, LinearWeighted, Triangular, Exponential
 from trade_record import TradeRecord
 import socket
 
@@ -26,11 +26,11 @@ class StrategyMan:
 				1 -- slow on bottom, fast on top (watch for downward trend)
 		"""
 
-		self.strategies = {'sma': {'slow': Simple(20), 'fast': Simple(5)}}
+		self.strategies = {'sma': {'slow': Simple(20), 'fast': Simple(5)}, 'lwma': {'slow': LinearWeighted(20), 'fast': LinearWeighted(5)}, 'ema': {'slow': Exponential(20), 'fast': Exponential(5)}, 'tma': {'slow': Triangular(20), 'fast': Triangular(5)}}
 		self.tick = 0
 		self.HOST = 'localhost'
 		self.PORT = 3001
-		self.averages = {'sma': {'slow': None, 'fast': None}}
+		self.averages = {'sma': {'slow': None, 'fast': None}, 'lwma': {'slow': None, 'fast': None}, 'ema': {'slow': None, 'fast': None}, 'tma': {'slow': None, 'fast': None}}
 		self.trend = {'sma': 0, 'lwma': 0, 'ema': 0, 'tma': 0}
 
 		self.mSchedule = [[1, 2, 1, 2], [3, 4, 3, 4], [1, 2, 1, 2], [1, 2, 1, 2], [3, 4, 3, 4], [3, 4, 3, 4], [5, 6, 5, 6], [7, 8, 7, 8]]
