@@ -27,4 +27,4 @@ class Exponential(Average):
         if self.time == 0:
             return point
         else:
-            return add_successive_points(point)
+            return self.add_successive_points(point)
