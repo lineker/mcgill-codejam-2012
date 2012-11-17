@@ -3,15 +3,14 @@
 import time
 import socket
 import sys
-import threading
-import re
+from averages import average
+import strategyman
 
-
+stratMan = Strategyman()
 
 HOST = 'localhost'
 GET = '/rss.xml'
 PORT = 3000
-
  
 try:
   sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -33,8 +32,6 @@ string = ""
 string_del = ""
 buff = []
 
-p = re.compile('\d{1, 3}' + '.' + '\d', re.IGNORECASE)
-
 while len(data):
 	string_del = ""
 	data = sock.recv(48)
@@ -46,18 +43,19 @@ while len(data):
   	if len(string_del) > 0:
   		try:
   	  		string_del.remove("")
-  	  		# detect half-read values
+  	  		#detect half-read values
   			#cut = string_del.
 
   	  	except ValueError:
   	  		print ""
 	  	buff[0:] = map(float, string_del)
   	print buff
-
-  	# send buff to average calculator here
+  	for point in buff:
+		# pass point to strategyman
+		stratMan.process(point)
+	  	# update all
 
 sock.close()
-
 
 	# url = "http://localhost:8080"
  #    data = {'x': data[min], 'y': data[max]}
