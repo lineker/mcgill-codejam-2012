@@ -3,10 +3,10 @@
 import time
 import socket
 import sys
-from averages import average
-import Strategyman
+from averages import Simple 
+from strategyman import StrategyMan
 
-stratMan = Strategyman()
+stratMan = StrategyMan()
 
 HOST = 'localhost'
 GET = '/rss.xml'
@@ -31,7 +31,7 @@ data = sock.recv(48)
 string = ""
 string_del = ""
 buff = []
-
+stor = []
 while len(data):
 	string_del = ""
 	data = sock.recv(48)

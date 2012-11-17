@@ -1,6 +1,7 @@
+#! /bin/python
 import sys
-from averages import SimpleMovingAverage
-import TradeRecord
+from averages import Simple
+from trade_record import TradeRecord
 
 class StrategyMan:
 
@@ -13,8 +14,8 @@ class StrategyMan:
 			strategies -- dictionary of dictionaries for each strategy: sma, lwma, tma, ema and the 2 average types
 			record -- a dictionary of records
 		"""
-		self.strategies = {'sma': {'slow': averages.SimpleMovingAverage(20), 'fast': averages.SimpleMovingAverage(5)}}
-
+		self.strategies = {'sma': {'slow': Simple(20), 'fast': Simple(5)}}
+		self.tick = 0
 		self.HOST = 'localhost'
 		self.PORT = 3001
  		
@@ -28,19 +29,21 @@ class StrategyMan:
 			point -- the new price value to process
 		"""
 		self.tick+= 1
-		for strat in strategies:
-			strat['slow'].update(point)
-			strat['fast'].update(point)
+		for strat in self.strategies:
+			self.strategies[strat]['slow'].update(point)
+			self.strategies[strat]['fast'].update(point)
 
-		action = detect_crossover(self.tick)
+		action = self.detect_crossover(self.tick)
 
 		if action == 0:
-			# buy
+			# buy -- so 
+			print ""
 		elif action == 1:
 			# sell
+			print ""
 		
 
-	def detect_crossover(time):
+	def detect_crossover(self, time):
 		"""
 		Detects a crossover between the slow and fast moving averages for each strategy.
 		Returns:
@@ -56,12 +59,12 @@ class StrategyMan:
 
 
 	def buy(self):
- 		self.send("B")
+ 		self.send("B\n")
 
  		self.store_record(0, self.tick)
 
 	def sell(self):
-		self.send("S")
+		self.send("S\n")
 
 		self.store_record(0, self.tick)
 
@@ -72,7 +75,7 @@ class StrategyMan:
 		Parameters:
 			cmd -- the action type
 		"""
-		 GET = '/rss.xml'
+		GET = '/rss.xml'
 
 		try:
 		  sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
