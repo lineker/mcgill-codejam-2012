@@ -10,7 +10,7 @@ class TradeRecord:
 		time - the time at which the action took place
 		strategyType - the strategy type key
 		"""
-		
+
 		self.manager = id
 		self.action = action
 		self.time = time
@@ -20,3 +20,8 @@ class TradeRecord:
 		"""
 		sends the JSON form of itself to the Silanus API for signing by manager
 		"""
+		print self.manager
+		print self.action
+		print self.time
+		print self.strategyType
+		
