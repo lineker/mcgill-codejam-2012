@@ -3,15 +3,15 @@ from json import dumps
 
 class TradeRecord:
 
-	def __init__(self, id, action, time, strategyType):
+	def __init__(self, mid, action, time, strategyType, point):
 		""" Attributes
 		manager - the manager id for the trade
 		action - a string "B":buy or "S":sell
 		time - the time at which the action took place
 		strategyType - the strategy type key
 		"""
-
-		self.manager = id
+		self.price = point
+		self.manager = mid
 		self.action = action
 		self.time = time
 		self.strategyType = strategyType
@@ -20,8 +20,10 @@ class TradeRecord:
 		"""
 		sends the JSON form of itself to the Silanus API for signing by manager
 		"""
-		print self.manager
-		print self.action
-		print self.time
-		print self.strategyType
-		
+		return dumps({
+				"time": self.time,
+				"type": self.strategyType,
+				"price": self.price,
+				"manager": self.manager,
+				"strategy": self.strategyType})
+ 

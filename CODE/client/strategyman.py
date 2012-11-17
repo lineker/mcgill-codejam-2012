@@ -24,6 +24,7 @@ class StrategyMan:
 				0 -- starting default
 				-1 -- fast is on bottom, slow on top (watch for upward trend)
 				1 -- slow on bottom, fast on top (watch for downward trend)
+			transactions -- array of trade records
 		"""
 
 		self.strategies = {'sma': {'slow': Simple(20), 'fast': Simple(5)}, 'lwma': {'slow': LinearWeighted(20), 'fast': LinearWeighted(5)}, 'ema': {'slow': Exponential(20), 'fast': Exponential(5)}, 'tma': {'slow': Triangular(20), 'fast': Triangular(5)}}
@@ -32,9 +33,8 @@ class StrategyMan:
 		self.PORT = 3001
 		self.averages = {'sma': {'slow': None, 'fast': None}, 'tma': {'slow': None, 'fast': None}, 'lwma': {'slow': None, 'fast': None}, 'ema': {'slow': None, 'fast': None}}
 		self.trend = {'sma': 0, 'lwma': 0, 'ema': 0, 'tma': 0}
-
 		self.mSchedule = [[1, 2, 1, 2], [3, 4, 3, 4], [1, 2, 1, 2], [1, 2, 1, 2], [3, 4, 3, 4], [3, 4, 3, 4], [5, 6, 5, 6], [7, 8, 7, 8]]
-
+		self.transactions = []
 
 		try:
 		  self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -69,12 +69,12 @@ class StrategyMan:
 			if result['action'] == 0:
 				# buy
 				self.buy()
-				self.store_record(0, self.tick, result['sType'])
+				self.store_record(0, self.tick, result['sType'], point)
 				
 			elif result['action'] == 1:
 				# sell
 				self.sell()
-				self.store_record(1, self.tick, result['sType'])	
+				self.store_record(1, self.tick, result['sType'], point)	
 
 		# send data to GUI
 
@@ -128,7 +128,7 @@ class StrategyMan:
 		self.sock.send(cmd + "\n")
 
 
-	def store_record(self, actionType, time, strategyType):
+	def store_record(self, actionType, time, strategyType, point):
 		"""
 		Store the action that took place at what time and get the manager
 		Triggers the record to send itself to the Silanus API
@@ -142,11 +142,12 @@ class StrategyMan:
 	
 		if actionType:
 			# add the new trade to the record
-			newRecord = TradeRecord(manID, "S", time, strategyType)
+			newRecord = TradeRecord(manID, "S", time, strategyType, point)
 		else:
-			newRecord = TradeRecord(manID, "B", time, strategyType)
+			newRecord = TradeRecord(manID, "B", time, strategyType, point)
 
 		newRecord.send()
+		self.transactions.append(newRecord)
 
 	def getManager(self, tick, sType):
 		"""
@@ -184,7 +185,8 @@ class StrategyMan:
 		else:
 			return self.mSchedule[7][strategyType]
 
-
+	def getTransactions(self):
+		return self.transactions
 
 
 
