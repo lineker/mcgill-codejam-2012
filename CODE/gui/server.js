@@ -25,11 +25,11 @@ app.configure('production', function () {
 /* Routes */
 
 app.get('/', function (req, res) {
-    res.sendfile('index.html');
+    res.sendfile('templates/index.html');
 });
 
 app.get('/:path', function (req, res) {
-    res.sendfile(req.params.path + ".html");
+    res.sendfile("templates/" + req.params.path + ".html");
 });
 
 /* Start server */
