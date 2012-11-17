@@ -27,16 +27,25 @@ except socket.error, msg:
 sock.send("H\n")
 count = 0
 
-data = sock.recv(48)
+data = sock.recv(46)
 string = ""
 string_del = ""
 buff = []
 stor = []
+index = -1
+last_string = ""
 while len(data):
 	string_del = ""
-	data = sock.recv(48)
+	if last_string != "" and last_string != "C":
+		data = last_string + data
+		last_string = ""
+		
 	string_del = data.split("|")
-	string_del.pop()
+	index = data.rfind("|")
+
+	if index != -1 & (index + 1) < len(data):
+		last_string = string_del.pop()
+	
 	#print string_del
 	stor[len(stor):] = string_del
 
@@ -55,6 +64,8 @@ while len(data):
 		  stratMan.process(point)
 	  	# update all
 
+	data = sock.recv(46)	
+		
 sock.close()
 	# url = "http://localhost:8080"
  #    data = {'x': data[min], 'y': data[max]}
