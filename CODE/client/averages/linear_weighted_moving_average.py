@@ -11,7 +11,14 @@ class LinearWeighted(Average):
             LWMA_t = sum_{i=1}^N price_{t-N+i} * i / sum_{i=1}^N i
         """
         
-        pass
+        numerator, denominator = 0.0, 0.0
+        self.points.append(point)
+
+        for i in xrange(self.set_size):
+            numerator += self.points[self.time - self.set_size + i] * (i + 1)
+            denominator += (i + 1)
+
+        return numerator/denominator
 
     def add_initial_points(self, point):
         """
@@ -20,4 +27,11 @@ class LinearWeighted(Average):
                 LWMA_t = (price_t * t) + ... + (price_1 * 1) / sum_{i=1}^t i
         """
 
-        pass
+        self.points.append(point)
+        numerator, denominator = 0.0, 0.0
+
+        for i in xrange(len(self.points)):
+            numerator += self.points[i] * (i + 1)
+            denominator += (i + 1)
+
+        return numerator/denominator
