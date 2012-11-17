@@ -108,7 +108,7 @@ class StrategyMan:
 		Parameters:
 			cmd -- the action type
 		"""
-		sock.send(cmd + "\n")
+		self.sock.send(cmd + "\n")
 
 
 	def store_record(self, actionType, time, strategyType):
@@ -131,7 +131,7 @@ class StrategyMan:
 
 		newRecord.send
 
-	def getManager(self, tick, strategyType):
+	def getManager(self, tick, sType):
 		"""
 		Returns the manager supervising the given strategy at a given time.
 		Parameters:
@@ -140,24 +140,34 @@ class StrategyMan:
 		Returns:
 			id -- manager id
 		"""
+		strategyType = 0
 		time = tick + 32400
+		if sType == 'sma':
+			strategyType = 0
+		elif sType == 'lwma':
+			strategyType = 1
+		elif sType == 'ema':
+			strategyType = 2
+		else:
+			strategyType = 3 #tma
+
 
 		if time <= 39600:
-			return mSchedule[1][strategyType]
+			return self.mSchedule[1][strategyType]
 		elif time <= 41400:
-			return mSchedule[2][strategyType]
+			return self.mSchedule[2][strategyType]
 		elif time <= 46800:
-			return mSchedule[3][strategyType]
+			return self.mSchedule[3][strategyType]
 		elif time <= 48600:
-			return mSchedule[4][strategyType]
+			return self.mSchedule[4][strategyType]
 		elif time <= 55800:
-			return mSchedule[5][strategyType]
+			return self.mSchedule[5][strategyType]
 		elif time <= 63000:
-			return mSchedule[6][strategyType]
+			return self.mSchedule[6][strategyType]
 		elif time <= 64800:
-			return mSchedule[7][strategyType]
+			return self.mSchedule[7][strategyType]
 		else:  #time <= 68400 
-			return mSchedule[8][strategyType]
+			return self.mSchedule[8][strategyType]
 
 
 
