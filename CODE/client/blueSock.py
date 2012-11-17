@@ -71,12 +71,16 @@ class Data(BaseNamespace, BroadcastMixin):
                         # pass point to strategyman
                         stratMan.process(point)
                         # get point and averages and send it
-                        self.emit('data', { "time": time() * 1000, "value": random() })
+
+                        data = stratMan.getAverages()
+                        for sType in data:
+                            self.emit('data', { "time": time() * 1000, "value": data[sType]['slow']})
+                            #self.emit('data', { "time": time()*1000, "value": })
                         gevent.sleep(0.5) # why?
 
                     data = exchange_sock.recv(46)    
                 #self.emit('data', { "time": time() * 1000, "value": random() })
-                gevent.sleep(0.5)
+                gevent.sleep(0.05)
 
         self.spawn(generate_data)
 
