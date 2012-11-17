@@ -4,7 +4,7 @@ import time
 import socket
 import sys
 from averages import average
-import strategyman
+import Strategyman
 
 stratMan = Strategyman()
 

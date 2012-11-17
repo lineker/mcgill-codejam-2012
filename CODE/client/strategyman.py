@@ -5,14 +5,13 @@ import TradeRecord
 class StrategyMan:
 
 	def __init__(self):
-
 		""" 
 		Keeps track of the four strategies, detects crossovers, and logs trade records.
 
 		Attributes:
-			tick - updated per point
-			strategies - dictionary of dictionaries for each strategy: sma, lwma, tma, ema and the 2 average types
-			record - a dictionary of records
+			tick -- current "time", updated per point
+			strategies -- dictionary of dictionaries for each strategy: sma, lwma, tma, ema and the 2 average types
+			record -- a dictionary of records
 		"""
 		self.strategies = {'sma': {'slow': averages.SimpleMovingAverage(20), 'fast': averages.SimpleMovingAverage(5)}}
 
@@ -33,14 +32,38 @@ class StrategyMan:
 			strat['slow'].update(point)
 			strat['fast'].update(point)
 
+		action = detect_crossover(self.tick)
 
- 	def buy(self):
+		if action == 0:
+			# buy
+		elif action == 1:
+			# sell
+		
+
+	def detect_crossover(time):
+		"""
+		Detects a crossover between the slow and fast moving averages for each strategy.
+		Returns:
+			-1 -- if no crossover
+			0 -- if time to buy
+			1 -- if time to sell
+		"""
+
+
+
+		return -1 # no crossover
+
+
+
+	def buy(self):
  		self.send("B")
 
- 		self.store_record(0, )
+ 		self.store_record(0, self.tick)
 
 	def sell(self):
 		self.send("S")
+
+		self.store_record(0, self.tick)
 
 	def send(cmd):
 		"""
