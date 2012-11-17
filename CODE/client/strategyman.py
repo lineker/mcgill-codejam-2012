@@ -3,7 +3,7 @@ import sys
 from averages import Simple
 from trade_record import TradeRecord
 import socket
-from schedule import ManagerSchedule
+
 
 class StrategyMan:
 
@@ -27,7 +27,8 @@ class StrategyMan:
 		self.PORT = 3001
 		self.averages = {'sma': {'slow': None, 'fast': None}}
 		self.hasBought = False
-		self.mSchedule = ManagerSchedule()
+
+		self.mSchedule = [[1, 2, 1, 2], [3, 4, 3, 4], [1, 2, 1, 2], [1, 2, 1, 2], [3, 4, 3, 4], [3, 4, 3, 4], [5, 6, 5, 6], [7, 8, 7, 8], [5, 6, 5, 6]]
  		
 	def process(self, point):
 		"""
@@ -115,8 +116,9 @@ class StrategyMan:
 			actionType: 0 -- buy
 			actionType: 1 -- sell
 		"""
-		manID = -1
-		#manID = mSchedule.getManager(time, )
+
+		manID = self.getManager(time, strategyType)
+	
 
 		if actionType:
 			# add the new trade to the record
@@ -125,4 +127,34 @@ class StrategyMan:
 			newRecord = TradeRecord(manID, "B", time, strategyType)
 
 		newRecord.send
+
+	def getManager(self, time, strategyType):
+		"""
+		Returns the manager supervising the given strategy at a given time.
+		Parameters:
+			time -- the time at which the trade was made
+			strategyType -- the strategy type of the trade
+		Returns:
+			id -- manager id
+		"""
+
+		if time <= 39600:
+			return mSchedule[1][strategyType]
+		elif time <= 41400:
+			return mSchedule[2][strategyType]
+		elif time <= 46800:
+			return mSchedule[3][strategyType]
+		elif time <= 48600:
+			return mSchedule[4][strategyType]
+		elif time <= 55800:
+			return mSchedule[5][strategyType]
+		elif time <= 63000:
+			return mSchedule[6][strategyType]
+		elif time <= 64800:
+			return mSchedule[7][strategyType]
+		else:  #time <= 68400 
+			return mSchedule[8][strategyType]
+
+
+
 
