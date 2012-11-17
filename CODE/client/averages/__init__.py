@@ -1,0 +1,4 @@
+from simple_moving_average import Simple
+from linear_weighted_moving_average import LinearWeighted
+from exponential_moving_average import Exponential
+from triangular_moving_average import Triangular

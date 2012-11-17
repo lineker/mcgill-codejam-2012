@@ -1,6 +1,6 @@
 from average import Average
 
-class SimpleMovingAverage(Average):
+class Simple(Average):
     """
     The unweighted mean of the last N data points.
     """
