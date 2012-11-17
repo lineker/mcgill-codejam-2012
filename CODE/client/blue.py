@@ -4,6 +4,7 @@ import time
 import socket
 import sys
 import threading
+import re
 
 
 
@@ -32,28 +33,7 @@ string = ""
 string_del = ""
 buff = []
 
-class MyThread ( threading.Thread ):
-
-   def run ( self ):
-   		min = 0
-   		max = 0
-   		while True:
-	   		if len(buff) > 0:
-	   			# min = max
-	   			# max += len(buff)
-	   			# subset = []
-	   			# subset = buff[min:max]
-	   			print min
-	   			print max
-	   			print buff
-	   			print "\n"
-	   		else:
-	   			time.sleep(1)
-
-#MyThread().start()
-stor = []
-min = 0
-max = 0
+p = re.compile('\d{1, 3}' + '.' + '\d', re.IGNORECASE)
 
 while len(data):
 	string_del = ""
@@ -66,6 +46,9 @@ while len(data):
   	if len(string_del) > 0:
   		try:
   	  		string_del.remove("")
+  	  		# detect half-read values
+  			#cut = string_del.
+
   	  	except ValueError:
   	  		print ""
 	  	buff[0:] = map(float, string_del)
@@ -75,16 +58,6 @@ while len(data):
 
 sock.close()
 
-
-def avg(buff):
-	val = buff[0]
-	# calculate avg
-	if buff.size < 5:
-		val = 1.000
-	elif buff.size < 20:
-		val = 2.000
-	else:
-		val = 3.000
 
 	# url = "http://localhost:8080"
  #    data = {'x': data[min], 'y': data[max]}
