@@ -11,7 +11,7 @@ class Average:
     """
     Attributes:
         average  -- the current average at a particular tick
-        tick     -- the current time tick for this average
+        time     -- the current time tick for this average
         set_size -- the subset size for this moving average
         points   -- the list of points currently part of the moving average
     """
@@ -25,7 +25,7 @@ class Average:
         """
 
         self.average = 0
-        self.tick = 0
+        self.time = 0
         self.set_size = set_size
         self.points = deque([])
 
@@ -47,7 +47,7 @@ class Average:
         else:
             self.average = self.add_successive_points(float(point))
 
-        tick += 1
+        self.time += 1
         return self.average
 
     def add_successive_points(self, point):
@@ -86,4 +86,4 @@ class Average:
         Serializes moving average data to JSON.
         """
 
-        return dumps({ticks: self.ticks, average: self.average})
+        return dumps({time: self.time, average: self.average})
