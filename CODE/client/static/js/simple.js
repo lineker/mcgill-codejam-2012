@@ -1,4 +1,5 @@
 $(document).ready(function () {
+    var sock = io.connect('http://localhost:9090');
     var chart = new Highcharts.Chart({
         chart: {
             renderTo: 'simple',
@@ -6,23 +7,15 @@ $(document).ready(function () {
             marginRight: 10,
             events: {
                 load: function() {
+                    var self = this;
+                    sock.emit('ready');
+                    sock.on('data', function (data) {
+                        var price = self.series[0],
+                            x = data['time'],
+                            y = data['value'];
 
-                    // set up the updating of the chart each second
-                    var price = this.series[0],
-                        sta   = this.series[1],
-                        lta   = this.series[2];
-
-                    setInterval(function() {
-                        var x = (new Date()).getTime(),
-                            // current time
-                            y1 = Math.random(),
-                            y2 = Math.random();
-                            y3 = Math.random();
-
-                        price.addPoint([x, y1], true, true);
-                        sta.addPoint([x, y2], true, true);
-                        lta.addPoint([x, y3], true, true);
-                    }, 500);
+                        price.addPoint([x, y], true, true);
+                    });
                 }
             }
         },
@@ -70,32 +63,6 @@ $(document).ready(function () {
             
         },
         series: [{
-            data: (function() {
-                // generate an array of random data
-                var data = [],
-                    time = (new Date()).getTime(),
-                    i;
-                for (i = -19; i <= 0; i++) {
-                    data.push({
-                        x: time + i * 1000,
-                        y: 0
-                    });
-                }
-                return data;
-            })()},{
-            data: (function() {
-                // generate an array of random data
-                var data = [],
-                    time = (new Date()).getTime(),
-                    i;
-                for (i = -19; i <= 0; i++) {
-                    data.push({
-                        x: time + i * 1000,
-                        y: 0
-                    });
-                }
-                return data;
-            })()},{
             data: (function() {
                 // generate an array of random data
                 var data = [],
