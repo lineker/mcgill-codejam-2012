@@ -1,4 +1,4 @@
-#! /bin/python
+#!/usr/bin/env python
 import sys
 from averages import Simple
 from trade_record import TradeRecord
@@ -11,13 +11,19 @@ class StrategyMan:
 
 		Attributes:
 			tick -- current "time", updated per point
-			strategies -- dictionary of dictionaries for each strategy: sma, lwma, tma, ema and the 2 average types
+			strategies -- dictionary of dictionaries storing the strategys and their average objects for sma, lwma, tma, ema
 			record -- a dictionary of records
+			averages -- a dictionary of averages for the current tick in form
+					{'sma': {'slow': val, 'fast': val2}, 'lwma' : {... }, ...}, 'tick2': ...} (same as strategies but with the actual values)
+			hasBought -- flag indicating if a purchase has been made (if no purchase to date, cannot sell)
+
 		"""
 		self.strategies = {'sma': {'slow': Simple(20), 'fast': Simple(5)}}
 		self.tick = 0
 		self.HOST = 'localhost'
 		self.PORT = 3001
+		self.averages = {}
+		self.hasBought = False
  		
 	def process(self, point):
 		"""
@@ -30,17 +36,20 @@ class StrategyMan:
 		"""
 		self.tick+= 1
 		for strat in self.strategies:
-			self.strategies[strat]['slow'].update(point)
-			self.strategies[strat]['fast'].update(point)
+			self.averages[strat]['slow'] = self.strategies[strat]['slow'].update(point)
+			self.averages[strat]['fast'] = self.strategies[strat]['fast'].update(point)
 
 		action = self.detect_crossover(self.tick)
 
 		if action == 0:
-			# buy -- so 
-			print ""
+			# buy
+			self.buy()
+			self.hasBought = True
+			
 		elif action == 1:
 			# sell
-			print ""
+			self.sell()
+			self.hasBought = False
 		
 
 	def detect_crossover(self, time):
@@ -51,10 +60,13 @@ class StrategyMan:
 			0 -- if time to buy
 			1 -- if time to sell
 		"""
-
-
-
-		return -1 # no crossover
+		for strat in self.strategies:
+			if self.averages[strat]['fast'] >= self.averages[strat]['slow'] && !self.hasBought:
+				return 0
+			elif self.averages[strat]['fast'] <= self.averages[strat]['slow'] && self.hasBought:
+				return 1
+			else:
+				return -1 # no crossover
 
 
 
