@@ -10,7 +10,7 @@ from tmaManager import tmaManager
 from lwmaManager import lwmaManager
 from emaManager import emaManager 
 import genericStrategyMan
-from sock import sock
+from sock import Sock
 
 HOST = 'localhost'
 PORT = 3000
@@ -109,5 +109,5 @@ while len(data):
             inputQueues[q].put(point)
             print point
     data = exchange_sock.recv(46)   
-    #time.sleep(1)
+    time.sleep(1)
 
