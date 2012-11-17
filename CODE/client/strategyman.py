@@ -31,7 +31,7 @@ class StrategyMan:
 		self.HOST = 'localhost'
 		self.PORT = 3001
 		self.averages = {'sma': {'slow': None, 'fast': None}}
-		self.trend = 0
+		self.trend = {'sma': 0, 'lwma': 0, 'ema': 0, 'tma': 0}
 
 		self.mSchedule = [[1, 2, 1, 2], [3, 4, 3, 4], [1, 2, 1, 2], [1, 2, 1, 2], [3, 4, 3, 4], [3, 4, 3, 4], [5, 6, 5, 6], [7, 8, 7, 8]]
 
@@ -90,24 +90,25 @@ class StrategyMan:
 			and the strategy type of the strategy which had the crossover.
 		"""
 
-		# when time = 0 set trend
-		if self.trend == 0:
-			if self.averages[strat]['fast'] > self.averages[strat]['slow']:
-				self.trend = -1
-			elif self.averages[strat]['fast'] < self.averages[strat]['slow']:
-				self.trend = 1
-			else:
-				self.trend = 0
 
 		for strat in self.strategies:
-			if self.trend == -1 and self.averages[strat]['fast'] >= self.averages[strat]['slow']:
-				self.trend = 1
-				return {'action': 0, 'sType': strat}
-			elif self.trend == 1 and self.averages[strat]['fast'] <= self.averages[strat]['slow']:
-				self.trend = -1
-				return {'action': 1, 'sType': strat}
-			else:
-				return None # no crossover
+					# when time = 0 set trend
+			if self.trend[strat] == 0:
+				if self.averages[strat]['fast'] > self.averages[strat]['slow']:
+					self.trend[strat] = -1
+				elif self.averages[strat]['fast'] < self.averages[strat]['slow']:
+					self.trend[strat] = 1
+				else:
+					self.trend[strat] = 0
+			else: 
+				if self.trend[strat]== -1 and self.averages[strat]['fast'] >= self.averages[strat]['slow']:
+					self.trend[strat] = 1
+					return {'action': 0, 'sType': strat}
+				elif self.trend[strat]== 1 and self.averages[strat]['fast'] <= self.averages[strat]['slow']:
+					self.trend[strat] = -1
+					return {'action': 1, 'sType': strat}
+				else:
+					return None # no crossover
 
 
 	def buy(self):
