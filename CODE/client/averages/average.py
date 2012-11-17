@@ -5,6 +5,7 @@ Provides a standard way to access and update data for a particular algorithm.
 """
 
 from collections import deque
+from json import dumps
 
 class Average:
     """
@@ -41,11 +42,12 @@ class Average:
             average -- the newly updated average after adding the point
         """
 
-        if self.points < self.set_size:
-            self.average = self.add_initial_points(point)
+        if len(self.points) < self.set_size:
+            self.average = self.add_initial_points(float(point))
         else:
-            self.average = self.add_successive_points(point)
+            self.average = self.add_successive_points(float(point))
 
+        tick += 1
         return self.average
 
     def add_successive_points(self, point):
@@ -79,5 +81,9 @@ class Average:
         """
         raise NotImplementedError("add_initial_points not yet implemented")
 
-    def average(self):
-        return self.average
+    def to_json(self):
+        """
+        Serializes moving average data to JSON.
+        """
+
+        return dumps({ticks: self.ticks, average: self.average})
