@@ -28,7 +28,7 @@ class Average:
         self.time = 0
         self.price = None
         self.set_size = set_size
-        self.points = deque([])
+        self.points = []
 
     def update(self, point):
         """
