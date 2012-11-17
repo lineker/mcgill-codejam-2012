@@ -69,12 +69,12 @@ class Data(BaseNamespace, BroadcastMixin):
                     print buff
                     for point in buff:
                         # pass point to strategyman
-                        self.stratMan.process(point)
+                        stratMan.process(point)
                         # get point and averages and send it
                         self.emit('data', { "time": time() * 1000, "value": random() })
                         gevent.sleep(0.5) # why?
 
-                    data = sock.recv(46)    
+                    data = exchange_sock.recv(46)    
                 #self.emit('data', { "time": time() * 1000, "value": random() })
                 gevent.sleep(0.5)
 
