@@ -19,7 +19,11 @@ class StrategyMan:
 					{'sma': {'slow': val, 'fast': val2}, 'lwma' : {... }, ...}, 'tick2': ...} (same as strategies but with the actual values)
 			hasBought -- flag indicating if a purchase has been made (if no purchase to date, cannot sell)
 			mSchedule -- manager schedule to get the manager for sending records. To understand how it works, ask Rebecca.
-			sock - the socket connection to the MS Exchange on port 3001 for making trades
+			sock -- the socket connection to the MS Exchange on port 3001 for making trades
+			trend -- the current trend of the averages 
+				0 -- starting default
+				-1 -- fast is on bottom, slow on top (watch for upward trend)
+				1 -- slow on bottom, fast on top (watch for downward trend)
 		"""
 
 		self.strategies = {'sma': {'slow': Simple(20), 'fast': Simple(5)}}
@@ -27,9 +31,9 @@ class StrategyMan:
 		self.HOST = 'localhost'
 		self.PORT = 3001
 		self.averages = {'sma': {'slow': None, 'fast': None}}
-		self.hasBought = False
+		self.trend = 0
 
-		self.mSchedule = [[1, 2, 1, 2], [3, 4, 3, 4], [1, 2, 1, 2], [1, 2, 1, 2], [3, 4, 3, 4], [3, 4, 3, 4], [5, 6, 5, 6], [7, 8, 7, 8], [5, 6, 5, 6]]
+		self.mSchedule = [[1, 2, 1, 2], [3, 4, 3, 4], [1, 2, 1, 2], [1, 2, 1, 2], [3, 4, 3, 4], [3, 4, 3, 4], [5, 6, 5, 6], [7, 8, 7, 8]]
 
 
 		try:
@@ -83,11 +87,24 @@ class StrategyMan:
 			-1 -- if no crossover
 			0 -- if time to buy
 			1 -- if time to sell
+			and the strategy type of the strategy which had the crossover.
 		"""
+
+		# when time = 0 set trend
+		if self.trend == 0:
+			if self.averages[strat]['fast'] > self.averages[strat]['slow']:
+				self.trend = -1
+			elif self.averages[strat]['fast'] < self.averages[strat]['slow']:
+				self.trend = 1
+			else:
+				self.trend = 0
+
 		for strat in self.strategies:
-			if (self.averages[strat]['fast'] >= self.averages[strat]['slow'] and not self.hasBought):
+			if self.trend == -1 and self.averages[strat]['fast'] >= self.averages[strat]['slow']:
+				self.trend = 1
 				return {'action': 0, 'sType': strat}
-			elif (self.averages[strat]['fast'] <= self.averages[strat]['slow'] and self.hasBought):
+			elif self.trend == 1 and self.averages[strat]['fast'] <= self.averages[strat]['slow']:
+				self.trend = -1
 				return {'action': 1, 'sType': strat}
 			else:
 				return None # no crossover
@@ -164,10 +181,11 @@ class StrategyMan:
 			return self.mSchedule[5][strategyType]
 		elif time <= 63000:
 			return self.mSchedule[6][strategyType]
-		elif time <= 64800:
+		else:
 			return self.mSchedule[7][strategyType]
-		else:  #time <= 68400 
-			return self.mSchedule[8][strategyType]
+
+
+
 
 
 

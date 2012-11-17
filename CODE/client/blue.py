@@ -52,11 +52,10 @@ while len(data):
   	print buff
   	for point in buff:
 		# pass point to strategyman
-		stratMan.process(point)
+		  stratMan.process(point)
 	  	# update all
 
 sock.close()
-
 	# url = "http://localhost:8080"
  #    data = {'x': data[min], 'y': data[max]}
  #    headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
