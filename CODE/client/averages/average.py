@@ -86,4 +86,4 @@ class Average:
         Serializes moving average data to JSON.
         """
 
-        return dumps({time: self.time, average: self.average})
+        return dumps({"time": self.time, "average": self.average})
