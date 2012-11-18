@@ -132,11 +132,28 @@ $(document).ready(function () {
             })()}]
     });
 
+    $("#pause").on('click', function () {
+        socket.disconnect();
+        $("#notifications").html("Trading stream temporarily paused.");
+    });
+
     $(".nav > li").on('click', function (e) {
         e.preventDefault();
         $(".active").removeClass("active");
         $(this).addClass("active");
         chart.setTitle({ text: $(this).html() });
+    });
+
+    $("#managers").on('click', function (e) {
+        e.preventDefault();
+        $("#simple").css("display", "none");
+        $("#schedule").css("display", "block");
+    });
+
+    $(".charts").on('click', function (e) {
+        e.preventDefault();
+        $("#schedule").css("display", "none");
+        $("#simple").css("display", "block");
     });
 
     $("#start").on('click', function (e) {
