@@ -9,7 +9,7 @@ $(document).ready(function () {
             events: {
                 load: function() {
                     var self = this;
-                    /* sock.emit('ready');
+                    sock.emit('ready');
                     sock.on('data', function (data) {
                         var price = self.series[0],
                             x = data['time'],
@@ -17,7 +17,6 @@ $(document).ready(function () {
 
                         price.addPoint([x, y], true, true);
                     });
-                    */
                 }
             }
         },

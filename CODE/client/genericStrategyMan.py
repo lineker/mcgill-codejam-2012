@@ -97,7 +97,7 @@ class GenericStrategyMan( threading.Thread ):
 		self.averages['fast'] = self.strategies['fast'].update(point)
 
 		# output point and the two averages
-		self.web_soc.send("A|"+str(point)+"|"+str(self.averages['slow'])+"|"+self.averages['fast']+"\n")
+		self.web_soc.send("A|"+str(point)+"|"+str(self.averages['slow'])+"|"+str(self.averages['fast'])+"\n")
 		#self.outputQueue.put({'price': point, 'slowAvg': self.averages['slow'], 'fastAvg': self.averages['fast'], 'time':self.tick})
 
 		result = self.detect_crossover()

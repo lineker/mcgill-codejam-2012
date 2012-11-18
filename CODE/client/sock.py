@@ -15,9 +15,9 @@ app = Bottle()
 class Data(BaseNamespace, BroadcastMixin):
 
     def on_start(self):
-        self.on_ready(True)
+        self.on_ready()
 
-    def on_ready(self, active):
+    def on_ready(self):
 
         # As server
         s = socket.socket()
@@ -32,20 +32,20 @@ class Data(BaseNamespace, BroadcastMixin):
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         s.connect(("127.0.0.1", 3333))
         s.send("H\n")
-        data = s.recv(1024)
         s.close()
 
         while 1:
             data = conn.recv(1024)
-            if not data: 
-                break
+            if not data:
+                continue
             else:
                 parsed_data = data.split("|")
                 if parsed_data[0] == "T":
                     self.emit("transaction", {"time": parsed_data[1], "type": parsed_data[2], "price": parsed_data[3], "manager": parsed_data[4], "strategy": parsed_data[5]})
                 elif data.split("|")[0] == "A":
                     self.emit("average", {"price": parsed_data[1], "slow": parsed_data[2], "fast": parsed_data[3]})
-
+                self.emit('data', { "time": time() * 1000, "value": random()})
+                gevent.sleep(0.5)
         conn.close()
         
 

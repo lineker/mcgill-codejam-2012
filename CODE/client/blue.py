@@ -89,7 +89,7 @@ while len(data):
         break
     if(data.rfind("|") != -1):
         point = float(''.join(string_del))
-        print "read point: " + str(point)
+        #print "read point: " + str(point)
         for q in inputQueues:
             inputQueues[q].put(point)
             
