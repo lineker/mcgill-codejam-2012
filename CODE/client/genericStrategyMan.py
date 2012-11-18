@@ -5,7 +5,6 @@ Keeps track of the four strategies, detects crossovers, and logs trade records.
 """
 
 import sys
-from trade_record import TradeRecord
 import socket
 import threading
 import Queue
@@ -90,14 +89,10 @@ class GenericStrategyMan( threading.Thread ):
 			if result['action'] == 0:
 				# buy
 				self.buy()
-				self.store_record(0, self.strategyType, point)
 				
 			elif result['action'] == 1:
 				# sell
-				self.sell()
-				self.store_record(1, self.strategyType, point)
-			
-
+				self.sell()			
 
 	def detect_crossover(self):
 		"""
@@ -133,30 +128,6 @@ class GenericStrategyMan( threading.Thread ):
 
 	def sell(self):
 		self.bsManager.send("S", self.strategyType,self.tQueue, self.getManager(self.strategyType), self.tick)
-
-
-
-	def store_record(self, actionType, time, point):
-		"""
-		Store the action that took place at what time and get the manager
-		Triggers the record to send itself to the Silanus API
-
-		Parameters:
-			actionType: 0 -- buy
-			actionType: 1 -- sell
-		"""
-
-		manID = self.getManager(self.strategyType)
-	
-		if actionType:
-			# add the new trade to the record
-			newRecord = TradeRecord(manID, "S", time, self.strategyType, point)
-		else:
-			newRecord = TradeRecord(manID, "B", time, self.strategyType, point)
-
-		newRecord.send()
-		self.transactions.append(newRecord)
-		self.tQueue.put(newRecord.toHash())
 
 	def getManager(self, sType):
 		"""

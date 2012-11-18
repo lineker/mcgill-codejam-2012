@@ -36,6 +36,11 @@ class Average(object):
         Handles both the situation where we have less than `set_size` points
         and also when we are adding successive values.
 
+        After executation, if `points` have more elements then `set_size`,
+        the first element of the list is removed. So, while running the
+        abstract methods, `points` may have `set_size` + 1 element, but after
+        their execution, the points are are removed from the list.
+
         Parameters:
             point   -- the next value obtained in our data set
 
@@ -50,6 +55,8 @@ class Average(object):
 
         self.time += 1
         self.price = float(point)
+        if len(self.points) > self.set_size:
+            self.points.pop(0)
 
         return self.average
 

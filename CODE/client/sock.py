@@ -16,13 +16,26 @@ outputQueues = {'sma': Queue.Queue(), 'lwma': Queue.Queue(), 'ema': Queue.Queue(
 transactionQueues = {'sma': Queue.Queue(), 'lwma': Queue.Queue(), 'ema': Queue.Queue(), 'tma': Queue.Queue()}
 
 class Data(BaseNamespace, BroadcastMixin):
-    def on_ready(self):
-        def generate_data():
-            while True:
-                self.emit('data', { "time": time() * 1000, "value": random() })
-                gevent.sleep(0.5)
+    def __init__(self):
+        self.queues = outputQueues
+        self.transactions = transactionQueues
+        self.start_flag = startQueue
 
-        self.spawn(generate_data)
+    def on_ready(self):
+        # Set start_flag to non-empty to notify Blue
+        self.start_flag.put(1)
+        
+        # Flag acknowledged by Blue and start consuming
+        while self.start_flag.empty():
+            for oq in outputQueues:
+                try:
+                    data = self.outputQueues[i].get() 
+                    if self.target == i:
+                        self.emit("data", json.dumps(data))
+                except:
+                    pass # Queue is currently empty
+
+        self.emit("complete") 
 
 @app.route('/socket.io/<arg:path>')
 def socketio(*arg, **kw):

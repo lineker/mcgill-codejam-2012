@@ -31,7 +31,6 @@ class Blue:
         self.flagQueue = startQueue
         self.clock = 0
 
-
         try:
             exchange_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         except socket.error, msg:
@@ -50,11 +49,10 @@ class Blue:
         self.outputQueues = outQueues
         self.transactionQueues = tQueues
 
-
-        sma = smaManager(1, 'sma', inputQueues['sma'], clock, outputQueues['sma'], transactionQueues['sma'])
-        lwma = lwmaManager(2, 'lwma', inputQueues['lwma'], clock, outputQueues['lwma'], transactionQueues['lwma'])
-        ema = emaManager(3, 'ema', inputQueues['ema'], clock, outputQueues['ema'], transactionQueues['ema'])
-        tma = tmaManager(4, 'tma', inputQueues['tma'], clock, outputQueues['tma'], transactionQueues['tma'])
+        sma = smaManager(1, 'sma', inputQueues['sma'], self.clock, self.outputQueues['sma'], self.transactionQueues['sma'])
+        lwma = lwmaManager(2, 'lwma', inputQueues['lwma'], self.clock, self.outputQueues['lwma'], self.transactionQueues['lwma'])
+        ema = emaManager(3, 'ema', inputQueues['ema'], self.clock, self.outputQueues['ema'], self.transactionQueues['ema'])
+        tma = tmaManager(4, 'tma', inputQueues['tma'], self.clock, self.outputQueues['tma'], self.transactionQueues['tma'])
 
         # start manager threads
         threads = []
@@ -71,7 +69,6 @@ class Blue:
         while self.flagQueue.isEmpty():
             # do blah
             print ""
-
 
         # now we start processing
         exchange_sock.send("H\n") # start the feed
@@ -91,11 +88,9 @@ class Blue:
                     inputQueues[q].put(point)
                   
                 string_del = []
-                clock += 1
+                self.clock += 1
             else:
                 string_del.append(data)
 
             data = exchange_sock.recv(byteSize)
-
-      
 
