@@ -1,9 +1,9 @@
 from gevent import monkey; monkey.patch_all()
 
 import gevent
-import Queue
 
-from blue import Blue
+from time import time
+from random import random
 from bottle import Bottle, request
 from socketio import server, socketio_manage
 from socketio.namespace import BaseNamespace
@@ -11,36 +11,36 @@ from socketio.mixins import BroadcastMixin
 
 app = Bottle()
 
-startQueue = Queue.Queue(1)
-outputQueues = {'sma': Queue.Queue(), 'lwma': Queue.Queue(), 'ema': Queue.Queue(), 'tma': Queue.Queue()}
-transactionQueues = {'sma': Queue.Queue(), 'lwma': Queue.Queue(), 'ema': Queue.Queue(), 'tma': Queue.Queue()}
-
 class Data(BaseNamespace, BroadcastMixin):
-    def __init__(self):
-        self.queues = outputQueues
-        self.transactions = transactionQueues
-        self.start_flag = startQueue
 
-    def on_ready(self):
-        #outQueues, startQueue, tQueues
-        blue = Blue(self.queues, self.start_flag, self.transactions)
-        blue.start()
-        # Set start_flag to non-empty to notify Blue
-        self.start_flag.put(1)
+    def on_ready(self, active):
+        # As client
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.connect(("127.0.0.1", 3333))
+        s.send("H\n")
+        data = s.recv(1024)
+        s.close()
+
+        # As server
+        HOST = "localhost"
+        PORT = 9001
+        s.bind((HOST, PORT))
+        s.listen(1)
+        conn, addr = s.accept()
+
+        while 1:
+            data = conn.recv(1024)
+            if not data: 
+                break
+            else:
+                parsed_data = data.split("|")
+                if parsed_data[0] == "T":
+                    self.emit("transaction", {"time": parsed_data[1], "type": parsed_data[2], "price": parsed_data[3], "manager": parsed_data[4], "strategy": parsed_data[5]})
+                else if data.split("|")[0] == "A":
+                    self.emit("average", {"price": parsed_data[1], "slow": parsed_data[2], "fast": parsed_data[3]})
+
+        conn.close()
         
-
-
-        # Flag acknowledged by Blue and start consuming
-        while self.start_flag.empty():
-            for oq in outputQueues:
-                try:
-                    data = self.outputQueues[i].get() 
-                    if self.target == i:
-                        self.emit("data", json.dumps(data))
-                except:
-                    pass # Queue is currently empty
-
-        self.emit("complete") 
 
 @app.route('/socket.io/<arg:path>')
 def socketio(*arg, **kw):
@@ -48,6 +48,5 @@ def socketio(*arg, **kw):
     return "out"
 
 if __name__ == '__main__':
-    blue = Blue(outputQueues, startQueue, transactionQueues)
     server.SocketIOServer(
         ('localhost', 9090), app, policy_server=False).serve_forever()
