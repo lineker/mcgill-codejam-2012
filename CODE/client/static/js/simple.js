@@ -39,6 +39,10 @@ $(document).ready(function () {
                     sock.on('complete', function () {
 
                     });
+
+                    sock.on('ceremony', function () {
+                        
+                    });
                 }
             }
         },
@@ -146,8 +150,6 @@ $(document).ready(function () {
     });
 
     $("#report").on('click', function (e) {
-        if (!$(this).hasClass("disabled")) {
-            console.log("reported!");
-        }
+        sock.emit("report");
     });
 });
