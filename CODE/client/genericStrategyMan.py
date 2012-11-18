@@ -146,7 +146,7 @@ class GenericStrategyMan( threading.Thread ):
 			actionType: 1 -- sell
 		"""
 
-		manID = self.getManager(time, self.strategyType)
+		manID = self.getManager(self.strategyType)
 	
 		if actionType:
 			# add the new trade to the record

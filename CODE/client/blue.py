@@ -5,7 +5,6 @@ import socket
 import sys
 import Queue
 import threading
-from time import time
 from smaManager import smaManager
 from tmaManager import tmaManager
 from lwmaManager import lwmaManager
@@ -105,5 +104,5 @@ while len(data):
             inputQueues[q].put(point)
             print point
     data = exchange_sock.recv(46)   
-    time.sleep(1)
+    #time.sleep(1)
 
