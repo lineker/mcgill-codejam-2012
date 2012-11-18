@@ -1,5 +1,6 @@
 $(document).ready(function () {
     var sock = io.connect('http://localhost:9090');
+    
     var chart = new Highcharts.Chart({
         chart: {
             renderTo: 'simple',
@@ -8,7 +9,7 @@ $(document).ready(function () {
             events: {
                 load: function() {
                     var self = this;
-                    sock.emit('ready');
+                    /* sock.emit('ready');
                     sock.on('data', function (data) {
                         var price = self.series[0],
                             x = data['time'],
@@ -16,6 +17,7 @@ $(document).ready(function () {
 
                         price.addPoint([x, y], true, true);
                     });
+                    */
                 }
             }
         },
@@ -76,5 +78,22 @@ $(document).ready(function () {
                 }
                 return data;
             })()}]
+    });
+
+    $(".nav > li").on('click', function (e) {
+        e.preventDefault();
+        $(".active").removeClass("active");
+        $(this).addClass("active");
+        chart.setTitle({ text: $(this).html() });
+    });
+
+    $("#start").on('click', function (e) {
+        sock.emit("start"); 
+    });
+
+    $("#report").on('click', function (e) {
+        if (!$(this).hasClass("disabled")) {
+            console.log("reported!");
+        }
     });
 });
