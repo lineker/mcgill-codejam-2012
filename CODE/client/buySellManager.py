@@ -47,7 +47,6 @@ class BuySellManager:
 				transactions[sType].put([time,cmd,float(response),manager,sType])
 		except socket.error, msg:
 		  sys.stderr.write("[ERROR] %s\n" % msg[1])
-		  sys.exit(2)
 		
 		
 
