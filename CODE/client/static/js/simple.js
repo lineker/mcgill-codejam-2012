@@ -40,8 +40,9 @@ $(document).ready(function () {
 
                     });
 
-                    sock.on('ceremony', function () {
-                        
+                    sock.on('ceremony', function (data) {
+                        var ceremonyId = data['ceremonyId'];
+                        $("#notifications").html("Signature approved - your ceremony ID is: " + ceremonyid);
                     });
                 }
             }
@@ -140,6 +141,7 @@ $(document).ready(function () {
 
     $("#start").on('click', function (e) {
         sock.emit("ready");
+        $("#notifications").html("The trading day has started.");
         $("#start").addClass("disabled");
         $("#pause").removeClass("disabled")
                    .removeClass("btn-danger")
@@ -150,6 +152,7 @@ $(document).ready(function () {
     });
 
     $("#report").on('click', function (e) {
+        $("#notifications").html("Report has been sent to Solaris for authentication and signing.");
         sock.emit("report");
     });
 });
