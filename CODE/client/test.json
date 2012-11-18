@@ -1,0 +1,11 @@
+
+{ "team" : "Flying monkeys",
+	"destination" : "ysbecca@gmail.com",
+	"transactions" : [
+	{
+	       "time" : "8004",
+	       "type" : "buy",
+	       "price" : 120,
+	       "manager" : "Manager1",
+	       "strategy" : "EMA"
+	}]}
