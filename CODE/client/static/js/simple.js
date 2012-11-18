@@ -1,7 +1,20 @@
 $(document).ready(function () {
+    String.prototype.toHHMMSS = function () {
+        sec_numb    = parseInt(this);
+        var hours   = Math.floor(sec_numb / 3600);
+        var minutes = Math.floor((sec_numb - (hours * 3600)) / 60);
+        var seconds = sec_numb - (hours * 3600) - (minutes * 60);
+
+        if (hours   < 10) {hours   = "0"+hours;}
+        if (minutes < 10) {minutes = "0"+minutes;}
+        if (seconds < 10) {seconds = "0"+seconds;}
+        var time    = hours+':'+minutes+':'+seconds;
+        return time;
+    } 
+
     var sock = io.connect('http://localhost:9090');
 
-    var transactions = []
+    var transactions = [];
     
     var chart = new Highcharts.Chart({
         chart: {
@@ -33,7 +46,10 @@ $(document).ready(function () {
 
                     sock.on('transaction', function (data) {
                         transactions.push(data);
-                        $transactions.prepend('<div class="transaction"><span class="type">' + typeMap[data.type] + ' at $' + data.price + '</span><p>Completed at XX:XX:XX AM by ' + data['strategy'].toUpperCase()  + '</p></div>')
+                        var time = 32400 + parseInt(data.time) + "";
+
+                        console.log(time);
+                        $transactions.prepend('<div class="transaction"><span class="type">' + typeMap[data.type] + ' at $' + data.price + '</span><p>Completed at ' + time.toHHMMSS() + ' by ' + data['strategy'].toUpperCase()  + '</p></div>')
                     });
 
                     sock.on('complete', function () {
@@ -103,32 +119,6 @@ $(document).ready(function () {
                     });
                 }
                 return data;
-            })()}, {
-            data: (function() {
-                // generate an array of random data
-                var data = [],
-                    time = (new Date()).getTime(),
-                    i;
-                for (i = -19; i <= 0; i++) {
-                    data.push({
-                        x: time + i * 1000,
-                        y: 0
-                    });
-                }
-                return data;
-            })()}, {
-            data: (function() {
-                // generate an array of random data
-                var data = [],
-                    time = (new Date()).getTime(),
-                    i;
-                for (i = -19; i <= 0; i++) {
-                    data.push({
-                        x: time + i * 1000,
-                        y: 0
-                    });
-                }
-                return data;
             })()}]
     });
 
@@ -142,9 +132,28 @@ $(document).ready(function () {
         $(".active").removeClass("active");
         $(this).addClass("active");
         chart.setTitle({ text: $(this).html() });
+        var data = (function() {
+                // generate an array of random data
+                var data = [],
+                    time = (new Date()).getTime(),
+                    i;
+                for (i = -19; i <= 0; i++) {
+                    data.push({
+                        x: time + i * 1000,
+                        y: 0
+                    });
+                }
+                return data;
+            });
+        chart.series[0].setData(data, true);
     });
 
-    $("#managers").on('click', function (e) {
+    $("#pause").on('click', function () {
+        socket.disconnect();
+        $("#notifications").html("Trading stream temporarily paused.");
+    });
+
+    $(".nav > li").on('click', function (e) {
         e.preventDefault();
         $("#simple").css("display", "none");
         $("#schedule").css("display", "block");
@@ -154,6 +163,12 @@ $(document).ready(function () {
         e.preventDefault();
         $("#schedule").css("display", "none");
         $("#simple").css("display", "block");
+    });
+
+    $("#managers").on('click', function (e) {
+        e.preventDefault();
+        $("#simple").css("display", "none");
+        $("#schedule").css("display", "block");
     });
 
     $("#start").on('click', function (e) {
