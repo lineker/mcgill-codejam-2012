@@ -38,7 +38,6 @@ class GenericStrategyMan( threading.Thread ):
     	self.name = name
     	self.inputQueue = inq
     	self.outputQueue = outq
-		self.strategyType = ""
 		self.strategies = {'slow': None, 'fast': None }
 		self.tick = clock
 		self.HOST = 'localhost'
