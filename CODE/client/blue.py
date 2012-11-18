@@ -11,6 +11,7 @@ from lwmaManager import lwmaManager
 from emaManager import emaManager 
 from sock import Sock
 import genericStrategyMan
+import signal
 
 HOST = 'localhost'
 PORT = 3000
@@ -51,6 +52,12 @@ threads.append(tma)
 for i in range(len(threads)):
     threads[i].start()
 
+def signal_handler(signal, frame):
+    print 'Ctrl+C detected, killing threads'
+    for i in range(len(threads)):
+        threads[i].exitFlag = True
+    sys.exit(0)
+signal.signal(signal.SIGINT, signal_handler)
 
 flagQueue = Queue.Queue()
 # start sock HEREEEEE, pass the transaction queues and output queues and the flag(?)
