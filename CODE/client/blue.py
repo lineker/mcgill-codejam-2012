@@ -25,8 +25,9 @@ PORT = 3000
 #     sys.exit(0)
 
 class Blue:
-
-    def __init__(self, outQueues, startQueue, tQueues):
+    def __init__(self):
+        pass
+    def start(self, outQueues, startQueue, tQueues):
 
         self.flagQueue = startQueue
         self.clock = 0
