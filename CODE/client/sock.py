@@ -86,7 +86,7 @@ class Data(BaseNamespace, BroadcastMixin):
             def on_report(self):
                 # all transactions as json
                 fo = open("trans.json", "w")
-                fo.write('  { "team" : "Flying monkeys",\n')
+                fo.write('  { "team" : "team-X",\n')
                 fo.write('      "destination" : "ysbecca@gmail.com",\n')
                 fo.write('      "transactions" : [')
                 contents = '{\n           "time": "8004",\n          "type" : "buy",\n          "price" : 120,\n          "manager" : "Manager1",\n          "strategy" : "EMA"\n      }]}\n'
