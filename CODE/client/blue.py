@@ -35,11 +35,20 @@ outputQueues = {'sma': Queue.Queue(), 'lwma': Queue.Queue(), 'ema': Queue.Queue(
 transactionQueues = {'sma': Queue.Queue(), 'lwma': Queue.Queue(), 'ema': Queue.Queue(), 'tma': Queue.Queue()}
 
 
-# start manager threads
-threads = {'sma': smaManager(1, 'sma', inputQueues['sma'], outputQueues['sma'], transactionQueues['sma']), 'lwma': lwmaManager(2, 'lwma', inputQueues['lwma'], outputQueues['lwma'], transactionQueues['lwma']), 'ema': emaManager(3, 'ema', inputQueues['ema'], outputQueues['ema'], transactionQueues['ema']), 'tma': tmaManager(4, 'tma', inputQueues['tma'], outputQueues['tma'], transactionQueues['tma'])}
+sma = smaManager(1, 'sma', inputQueues['sma'], outputQueues['sma'], transactionQueues['sma'])
+lwma = lwmaManager(2, 'lwma', inputQueues['lwma'], outputQueues['lwma'], transactionQueues['lwma'])
+ema = emaManager(3, 'ema', inputQueues['ema'], outputQueues['ema'], transactionQueues['ema'])
+tma = tmaManager(4, 'tma', inputQueues['tma'], outputQueues['tma'], transactionQueues['tma'])
 
-for key in threads:
-    threads[key].start()
+# start manager threads
+threads = []
+threads.append(sma)
+threads.append(lwma)
+threads.append(ema)
+threads.append(tma)
+
+for i in range(len(threads)):
+    threads[i].start()
 
 # start sock HEREEEEE, pass the transaction queues and output queues and the flag(?)
 
