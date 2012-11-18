@@ -7,7 +7,7 @@ Provides a standard way to access and update data for a particular algorithm.
 from collections import deque
 from json import dumps
 
-class Average:
+class Average(object):
     """
     Attributes:
         average  -- the current average at a particular tick

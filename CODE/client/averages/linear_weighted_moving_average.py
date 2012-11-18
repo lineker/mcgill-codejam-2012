@@ -15,7 +15,7 @@ class LinearWeighted(Average):
         self.points.append(point)
 
         for i in xrange(self.set_size):
-            numerator += self.points[self.time - self.set_size + i] * (i + 1)
+            numerator += self.points[self.time - self.set_size + i + 1] * (i + 1)
             denominator += (i + 1)
 
         return numerator/denominator
