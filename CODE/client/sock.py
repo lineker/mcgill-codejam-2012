@@ -71,7 +71,7 @@ class Data(BaseNamespace, BroadcastMixin):
                         count = 2 --> TMA"""
                         
                         #self.emit("average", {"price": parsed_data[1], "slow": parsed_data[2], "fast": parsed_data[3]})
-                        if count == 0: 
+                        if count == 0:
                             self.emit('average', { "time": time() * 1000, "price": float(parsed_data[1]), "slow": float(parsed_data[2]), "fast": float(parsed_data[3])})
                     #self.emit('data', { "time": time() * 1000, "value": random()})
                     fulldata = ""
@@ -88,6 +88,13 @@ class Data(BaseNamespace, BroadcastMixin):
                     fulldata = fulldata + data
     
             def on_report(self):
+                # all transactions as json
+                jsonData = "{'team' : 'Flying monkeys', 'destination' : 'ysbecca@gmail.com','transactions' : ["
+                for trans in transactions:
+                    jsonData += str(transactions[trans])
+                jsonData += "]}"
+                print "Generated JSON data for curl to e-signlive: "
+                print jsonData
                 re = commands.getstatusoutput("curl -X 'POST' -H 'Authorization: Basic Y29kZWphbTpBRkxpdGw0TEEyQWQx' -H 'Content-Type:application/json' --data-binary @test.json 'https://stage-api.e-signlive.com/aws/rest/services/codejam'")
                 temp = re[1]
                 data = ""
@@ -97,8 +104,7 @@ class Data(BaseNamespace, BroadcastMixin):
                             data += temp[i]
                             print data
                             i += 1
-                self.emit('data' : data) # re = {{"ceremonyId":"T5ZWzanNFprSdKlcnG2m8wmIvNoV"}}
-
+                self.emit('data' : data) # format {{"ceremonyId":"T5ZWzanNFprSdKlcnG2m8wmIvNoV"}}
                 conn.close()
         
 
