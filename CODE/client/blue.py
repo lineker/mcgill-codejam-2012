@@ -11,9 +11,18 @@ from lwmaManager import lwmaManager
 from emaManager import emaManager 
 from sock import Sock
 import genericStrategyMan
-
+import signal
 HOST = 'localhost'
 PORT = 3000
+
+def signal_handler(signal, frame):
+    print 'Ctrl+C detected, killing threads'
+    for i in range(len(threads)):
+        threads[i].exitFlag = True
+    sys.exit(0)
+
+#hack ctrl+D
+signal.signal(signal.SIGINT, signal_handler)
 
 try:
   exchange_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -28,7 +37,7 @@ except socket.error, msg:
   sys.exit(2)
 
 clock = 0
-startFlag = False
+startFlag = True
 
 # intialize input and output Q's for each of the 4 strategy managers
 inputQueues = {'sma': Queue.Queue(), 'lwma': Queue.Queue(), 'ema': Queue.Queue(), 'tma': Queue.Queue()}
@@ -50,13 +59,9 @@ threads.append(tma)
 
 for i in range(len(threads)):
     threads[i].start()
+    #pass
 
-def signal_handler(signal, frame):
-    print 'Ctrl+C detected, killing threads'
-    for i in range(len(threads)):
-        threads[i].exitFlag = True
-    sys.exit(0)
-signal.signal(signal.SIGINT, signal_handler)
+
 
 flagQueue = Queue.Queue()
 # start sock HEREEEEE, pass the transaction queues and output queues and the flag(?)
@@ -75,46 +80,28 @@ while not startFlag:
 print "we got here"
 
 exchange_sock.send("H\n") # start the feed
-data = exchange_sock.recv(46)
-string = ""
-string_del = ""
-buff = []
-stor = []
-index = -1
-last_string = ""
+byteSize = 1
+data = exchange_sock.recv(byteSize)
+string_del = []
 
 while len(data):
-    string_del = ""
-    if last_string != "" and last_string != "C":
-        data = last_string + data
-        last_string = ""
-        
-    string_del = data.split("|")
-    index = data.rfind("|")
-
-    if index != -1 & (index + 1) < len(data):
-        last_string = string_del.pop()
-    
-    #print string_del
-    stor[len(stor):] = string_del
-
-    if len(string_del) > 0:
-        try:
-            string_del.remove("")
-            #detect half-read values
-            #cut = string_del.
-        except ValueError:
-            print ""
-
-        buff[0:] = map(float, string_del)
-    print buff
-    for point in buff:
-        # pass point to strategyman
-        clock += 1
+    #print "data read --> "+data
+    if(data.rfind("C") != -1):
+        print "market closed"
+        break
+    if(data.rfind("|") != -1):
+        point = float(''.join(string_del))
+        print "read point: " + str(point)
         for q in inputQueues:
             inputQueues[q].put(point)
-            print point
-    data = exchange_sock.recv(46) 
+            
+        string_del = []
+        clock += 1
+        time.sleep(2)
+    else:
+        string_del.append(data)
 
-    time.sleep(1)
+    data = exchange_sock.recv(byteSize)
+
+    
 
