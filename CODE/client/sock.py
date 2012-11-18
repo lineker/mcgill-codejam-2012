@@ -22,9 +22,14 @@ class Data(BaseNamespace, BroadcastMixin):
         self.start_flag = startQueue
 
     def on_ready(self):
+        #outQueues, startQueue, tQueues
+        blue = Blue(self.queues, self.start_flag, self.transactions)
+        blue.start()
         # Set start_flag to non-empty to notify Blue
         self.start_flag.put(1)
         
+
+
         # Flag acknowledged by Blue and start consuming
         while self.start_flag.empty():
             for oq in outputQueues:

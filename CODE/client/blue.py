@@ -24,14 +24,18 @@ PORT = 3000
 #         threads[i].exitFlag = True
 #     sys.exit(0)
 
-class Blue:
-    def __init__(self):
-        pass
-    def start(self, outQueues, startQueue, tQueues):
+class Blue(threading.Thread):
 
+    def __init__(self, outQueues, startQueue, tQueues):
+
+        threading.Thread.__init__(self)
+        
         self.flagQueue = startQueue
+        self.outputQueues = outQueues
+        self.transactionQueues = tQueues
         self.clock = 0
 
+    def run(self):
         try:
             exchange_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         except socket.error, msg:
@@ -47,8 +51,7 @@ class Blue:
 
         # intialize input and output Q's for each of the 4 strategy managers
         inputQueues = {'sma': Queue.Queue(), 'lwma': Queue.Queue(), 'ema': Queue.Queue(), 'tma': Queue.Queue()}
-        self.outputQueues = outQueues
-        self.transactionQueues = tQueues
+        
 
         sma = smaManager(1, 'sma', inputQueues['sma'], self.clock, self.outputQueues['sma'], self.transactionQueues['sma'])
         lwma = lwmaManager(2, 'lwma', inputQueues['lwma'], self.clock, self.outputQueues['lwma'], self.transactionQueues['lwma'])
