@@ -1,20 +1,39 @@
 from average import Average
+from averages import Simple
 
 class Triangular(Average):
     """
     A smoothed version of the SMA.
+	
+    The __init__ method was overrided for creating the attributes below.
+    The update method was override for calculating the sma average.
+
+    Attributes
+        sma    -- The SMA instance that is used to do the sma calculations
+        sma_av -- A list that contains the lastest sma averages (should contain only the last 'set_size' calculations
     """
     
+    def __init__(self, set_size):
+        super(Triangular, self).__init__(set_size)
+        self.sma = Simple(set_size)
+        self.sma_av = []
+
+    def update(self, point):
+        self.sma_av.append(self.sma.update(point))
+        if len(self.sma_av) > self.set_size:
+            self.sma_av.pop(0)
+    	return super(Triangular, self).update(point)
+
     def add_successive_points(self, point):
         """
         Formula:
-            TMA_t = sum_{i=1}^N SMA_{t-N+1} / N
+            TMA_t = sum_{i=1}^N SMA_{t-N+i} / N
         """
         self.points.append(point)
 
         numerator = 0.0
-        for i in xrange(1, len(self.points) + 1):
-            numerator += self.simple_moving_average(self.time - self.set_size + i)
+        for i in range(self.set_size):
+            numerator += self.sma_av[i]
 
         return numerator/self.set_size
 
@@ -27,22 +46,7 @@ class Triangular(Average):
         self.points.append(point)
         
         numerator = 0.0
-        for i in xrange(1, len(self.points) + 1):
-            numerator += self.simple_moving_average(i)
+        for i in xrange(self.time + 1):
+            numerator += self.sma_av[i]
         
         return numerator/len(self.points)
-
-    def simple_moving_average(self, time):
-        """
-        We re-implement SMA in this method for performance improvements over
-        calling the existing SMA class.
-
-        Parameters:
-            time -- The time tick that we want to calculate SMA in
-        """
-
-        if time < self.set_size:
-            return sum(self.points[:time])/time
-        else:
-            # Performance improvement possible, but probably unnecessary
-            return sum(self.points[time - self.set_size : time])/self.set_size
