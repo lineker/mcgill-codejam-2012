@@ -45,7 +45,7 @@ class BuySellManager:
 				#create transaction
 				print "resp for "+sType+" cmd : "+response
 				#transactions[sType].put([time,cmd,float(response),manager,sType])
-				web_sock.send("T|"+str(time)+"|"+str(cmd)+"|"+str(response.strip())+"|"+str(manager)+"|"+str(sType)+"\n")
+				web_sock.send("T|"+str(time)+"|"+str(cmd)+"|"+str(response.strip())+"|"+str(manager)+"|"+str(sType)+"*")
 		except socket.error, msg:
 		  sys.stderr.write("[ERROR] %s\n" % msg[1])
 		

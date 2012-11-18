@@ -11,7 +11,7 @@ from socketio.mixins import BroadcastMixin
 import socket
 
 app = Bottle()
-
+s = socket.socket()
 class Data(BaseNamespace, BroadcastMixin):
 
     def on_start(self):
@@ -27,25 +27,34 @@ class Data(BaseNamespace, BroadcastMixin):
         s.listen(1)
         print "waiting for blue"
         conn, addr = s.accept()
-
+        gevent.sleep(3)
         # As client
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        s.connect(("127.0.0.1", 3333))
+        s.connect(("localhost", 3333))
         s.send("H\n")
         s.close()
-
+        fulldata = ""
         while 1:
-            data = conn.recv(1024)
+            data = conn.recv(1)
             if not data:
                 continue
             else:
-                parsed_data = data.split("|")
-                if parsed_data[0] == "T":
-                    self.emit("transaction", {"time": parsed_data[1], "type": parsed_data[2], "price": parsed_data[3], "manager": parsed_data[4], "strategy": parsed_data[5]})
-                elif data.split("|")[0] == "A":
-                    self.emit("average", {"price": parsed_data[1], "slow": parsed_data[2], "fast": parsed_data[3]})
-                self.emit('data', { "time": time() * 1000, "value": random()})
-                gevent.sleep(0.5)
+                if data == "*":
+                    print "raw : "+fulldata
+                    parsed_data = fulldata.split("|")
+                    print parsed_data
+                    if parsed_data[0] == "T":
+                        print "T added"
+                        self.emit("transaction", {"time": parsed_data[1], "type": parsed_data[2], "price": parsed_data[3], "manager": parsed_data[4], "strategy": parsed_data[5]})
+                    elif parsed_data[0] == "A":
+                        print "A added"
+                        #self.emit("average", {"price": parsed_data[1], "slow": parsed_data[2], "fast": parsed_data[3]})
+                        self.emit('data', { "time": time() * 1000, "value": random()})
+                    #self.emit('data', { "time": time() * 1000, "value": random()})
+                    fulldata = ""
+                    #gevent.sleep(0.5)
+                else:
+                    fulldata = fulldata + data
         conn.close()
         
 
