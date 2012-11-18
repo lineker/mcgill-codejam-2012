@@ -9,6 +9,7 @@ from trade_record import TradeRecord
 import socket
 import threading
 import Queue
+from buySellManager import BuySellManager
 
 # new BuySellManager
 
@@ -42,6 +43,7 @@ class GenericStrategyMan( threading.Thread ):
 		self.tick = clock
 		self.HOST = 'localhost'
 		self.exitFlag = False
+		self.bsMan = BuySellManager()
 		""" 
 			PORTS:
 			sma at 3001
@@ -126,12 +128,11 @@ class GenericStrategyMan( threading.Thread ):
 
 
 	def buy(self):
-		# TODO call buy sell manager.
- 		# self.send("B\n")
+ 		self.bsManager.send("B", self.strategyType)
  		print "Buying something from " + self.strategyType + "\n"
 
 	def sell(self):
-		# self.send("S\n")
+		self.bsManager.send("S\n", self.strategyType)
 		print  "Selling something " + self.strategyType + "\n"
 
 

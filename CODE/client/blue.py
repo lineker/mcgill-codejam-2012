@@ -28,7 +28,7 @@ except socket.error, msg:
   sys.exit(2)
 
 clock = 0
-startFlag = 1
+startFlag = False
 
 # intialize input and output Q's for each of the 4 strategy managers
 inputQueues = {'sma': Queue.Queue(), 'lwma': Queue.Queue(), 'ema': Queue.Queue(), 'tma': Queue.Queue()}
@@ -108,6 +108,6 @@ while len(data):
         for q in inputQueues:
             inputQueues[q].put(point)
             print point
-    data = exchange_sock.recv(46)   
-    #time.sleep(1)
+    data = exchange_sock.recv(46) 
+    time.sleep(1)
 
