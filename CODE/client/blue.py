@@ -9,7 +9,6 @@ from smaManager import smaManager
 from tmaManager import tmaManager
 from lwmaManager import lwmaManager
 from emaManager import emaManager 
-from sock import Sock
 import genericStrategyMan
 import signal
 HOST = 'localhost'
@@ -27,7 +26,7 @@ PORT = 3000
 
 class Blue:
 
-    def __init__(self, outQueues, startQueue):
+    def __init__(self, outQueues, startQueue, tQueues):
 
         self.flagQueue = startQueue
         self.clock = 0
@@ -49,7 +48,7 @@ class Blue:
         # intialize input and output Q's for each of the 4 strategy managers
         inputQueues = {'sma': Queue.Queue(), 'lwma': Queue.Queue(), 'ema': Queue.Queue(), 'tma': Queue.Queue()}
         self.outputQueues = outQueues
-        transactionQueues = {'sma': Queue.Queue(), 'lwma': Queue.Queue(), 'ema': Queue.Queue(), 'tma': Queue.Queue()}
+        self.transactionQueues = tQueues
 
 
         sma = smaManager(1, 'sma', inputQueues['sma'], clock, outputQueues['sma'], transactionQueues['sma'])
