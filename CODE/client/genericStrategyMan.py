@@ -11,10 +11,11 @@ import Queue
 from buySellManager import BuySellManager
 
 # new BuySellManager
+HOST = "localhost"
 
 class GenericStrategyMan( threading.Thread ):
 
-	def __init__(self, threadID, name, inq, clock, outq, transQ):
+	def __init__(self, threadID, name, inq, clock, outq, transQ, port):
 
 		""" 
 		Attributes:
@@ -43,6 +44,19 @@ class GenericStrategyMan( threading.Thread ):
 		self.HOST = 'localhost'
 		self.exitFlag = False
 		self.bsManager = BuySellManager()
+
+		try:
+		  self.web_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+		except socket.error, msg:
+		  sys.stderr.write("[ERROR] %s\n" % msg[1])
+		  sys.exit(1)
+		 
+		try:
+		  self.web_soc.connect((HOST, port))
+		except socket.error, msg:
+		  sys.stderr.write("[ERROR] %s\n" % msg[1])
+		  sys.exit(2)
+
 		""" 
 			PORTS:
 			sma at 3001
@@ -81,7 +95,8 @@ class GenericStrategyMan( threading.Thread ):
 		self.averages['fast'] = self.strategies['fast'].update(point)
 
 		# output point and the two averages
-		self.outputQueue.put({'price': point, 'slowAvg': self.averages['slow'], 'fastAvg': self.averages['fast'], 'time':self.tick})
+		self.web_soc.send(str(point)+"|"+str(self.averages['slow'])+"|"+self.averages['fast']+"\n")
+		#self.outputQueue.put({'price': point, 'slowAvg': self.averages['slow'], 'fastAvg': self.averages['fast'], 'time':self.tick})
 
 		result = self.detect_crossover()
 		
