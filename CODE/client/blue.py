@@ -11,7 +11,6 @@ from lwmaManager import lwmaManager
 from emaManager import emaManager 
 from sock import Sock
 import genericStrategyMan
-import signal
 
 HOST = 'localhost'
 PORT = 3000
@@ -115,10 +114,7 @@ while len(data):
         for q in inputQueues:
             inputQueues[q].put(point)
             print point
-<<<<<<< HEAD
     data = exchange_sock.recv(46) 
-=======
-    data = exchange_sock.recv(46)   
->>>>>>> ab321384ed79e6d2f1dae96fd38b030a3e9cf2b0
+
     time.sleep(1)
 
