@@ -1,5 +1,7 @@
 $(document).ready(function () {
     var sock = io.connect('http://localhost:9090');
+
+    var transactions = []
     
     var chart = new Highcharts.Chart({
         chart: {
@@ -8,14 +10,34 @@ $(document).ready(function () {
             marginRight: 10,
             events: {
                 load: function() {
-                    var self = this;
-                    sock.emit('ready');
-                    sock.on('data', function (data) {
-                        var price = self.series[0],
-                            x = data['time'],
-                            y = data['value'];
+                    var self = this,
+                        price = this.series[0],
+                        slow = this.series[1],
+                        fast = this.series[2],
+                        $transactions = $("#transactions"),
+                        typeMap = {
+                            "B": "Buy",
+                            "S": "Sell"
+                        };
 
-                        price.addPoint([x, y], true, true);
+                    sock.on('average', function (data) {
+                        var x = data['time'],
+                            y1 = data['price'],
+                            y2 = data['slow'],
+                            y3 = data['fast'];
+
+                        price.addPoint([x, y1], true, true);
+                        slow.addPoint([x, y2], true, true);
+                        fast.addPoint([x, y3], true, true);
+                    });
+
+                    sock.on('transaction', function (data) {
+                        transactions.push(data);
+                        $transactions.prepend('<div class="transaction"><span class="type">' + typeMap[data.type] + ' at $' + data.price + '</span><p>Completed at XX:XX:XX AM by ' + data['strategy'].toUpperCase()  + '</p></div>')
+                    });
+
+                    sock.on('complete', function () {
+
                     });
                 }
             }
@@ -76,6 +98,32 @@ $(document).ready(function () {
                     });
                 }
                 return data;
+            })()}, {
+            data: (function() {
+                // generate an array of random data
+                var data = [],
+                    time = (new Date()).getTime(),
+                    i;
+                for (i = -19; i <= 0; i++) {
+                    data.push({
+                        x: time + i * 1000,
+                        y: 0
+                    });
+                }
+                return data;
+            })()}, {
+            data: (function() {
+                // generate an array of random data
+                var data = [],
+                    time = (new Date()).getTime(),
+                    i;
+                for (i = -19; i <= 0; i++) {
+                    data.push({
+                        x: time + i * 1000,
+                        y: 0
+                    });
+                }
+                return data;
             })()}]
     });
 
@@ -87,7 +135,14 @@ $(document).ready(function () {
     });
 
     $("#start").on('click', function (e) {
-        sock.emit("start"); 
+        sock.emit("ready");
+        $("#start").addClass("disabled");
+        $("#pause").removeClass("disabled")
+                   .removeClass("btn-danger")
+                   .addClass("btn-warning");
+        $("#reset").removeClass("disabled")
+                   .removeClass("btn-danger")
+                   .addClass("btn-warning");
     });
 
     $("#report").on('click', function (e) {

@@ -57,9 +57,7 @@ class Data(BaseNamespace, BroadcastMixin):
                 continue
             else:
                 if data == "*":
-                    print "raw : "+fulldata
                     parsed_data = fulldata.split("|")
-                    print parsed_data
                     if parsed_data[0] == "T":
                         dic = {"time": parsed_data[1], "type": parsed_data[2], "price": parsed_data[3], "manager": parsed_data[4], "strategy": parsed_data[5]}
                         transactions[parsed_data[5]] = []
@@ -74,7 +72,7 @@ class Data(BaseNamespace, BroadcastMixin):
                         
                         #self.emit("average", {"price": parsed_data[1], "slow": parsed_data[2], "fast": parsed_data[3]})
                         if count == 0: 
-                            self.emit('data', { "time": time() * 1000, "value": float(parsed_data[1])})
+                            self.emit('average', { "time": time() * 1000, "price": float(parsed_data[1]), "slow": float(parsed_data[2]), "fast": float(parsed_data[3])})
                     #self.emit('data', { "time": time() * 1000, "value": random()})
                     fulldata = ""
                     if count == 0:
