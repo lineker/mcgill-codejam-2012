@@ -30,6 +30,6 @@ def socketio(*arg, **kw):
     return "out"
 
 if __name__ == '__main__':
-    blue = Blue(outputQueues, startQueue, inputQueues)
+    blue = Blue(outputQueues, startQueue, transactionQueues)
     server.SocketIOServer(
         ('localhost', 9090), app, policy_server=False).serve_forever()
