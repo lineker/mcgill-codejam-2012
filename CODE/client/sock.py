@@ -1,6 +1,9 @@
-import gevent
-import threading
+from gevent import monkey; monkey.patch_all()
 
+import gevent
+import Queue
+
+from blue import Blue
 from bottle import Bottle, request
 from socketio import server, socketio_manage
 from socketio.namespace import BaseNamespace
@@ -8,37 +11,25 @@ from socketio.mixins import BroadcastMixin
 
 app = Bottle()
 
-class Sock(threading.Thread, BaseNamespace, BroadcastMixin):
-    
-    def __init__(self, thread_id, SMA, LWMA, EMA, TMA, start_flag):
-        threading.Thread.__init__(self)
-        self.thread_id = thread_id
-        self.queues = [SMA, LWMA, EMA, TMA]
-        self.target = 0
-        self.start_flag = start_flag
+startQueue = Queue.Queue(1)
+outputQueues = {'sma': Queue.Queue(), 'lwma': Queue.Queue(), 'ema': Queue.Queue(), 'tma': Queue.Queue()}
+transactionQueues = {'sma': Queue.Queue(), 'lwma': Queue.Queue(), 'ema': Queue.Queue(), 'tma': Queue.Queue()}
 
-    def run(self):
-        pass
-        server.SocketIOServer(
-            ('localhost', 9090), app, policy_server=False).serve_forever()
-
+class Data(BaseNamespace, BroadcastMixin):
     def on_ready(self):
-        # Set start_flag to non-empty to notify Blue
-        self.start_flag.put(1)
-        
-        # Flag acknowledged by Blue and start consuming
-        while self.start_flag.empty():
-            for i in xrange(4):
-                try:
-                    data = self.queues[i].get() 
-                    if self.target == i:
-                        self.emit("data", json.dumps(data))
-                except:
-                    pass # Queue is currently empty
+        def generate_data():
+            while True:
+                self.emit('data', { "time": time() * 1000, "value": random() })
+                gevent.sleep(0.5)
 
-        self.emit("complete")
+        self.spawn(generate_data)
 
 @app.route('/socket.io/<arg:path>')
 def socketio(*arg, **kw):
     socketio_manage(request.environ, {'': Data}, request=request)
     return "out"
+
+if __name__ == '__main__':
+    blue = Blue(outputQueues, startQueue, inputQueues)
+    server.SocketIOServer(
+        ('localhost', 9090), app, policy_server=False).serve_forever()
