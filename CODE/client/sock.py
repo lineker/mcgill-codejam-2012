@@ -85,36 +85,37 @@ class Data(BaseNamespace, BroadcastMixin):
     
             def on_report(self):
                 # all transactions as json
-                fo = open('trans.json', 'w')
-                fo.write("  { 'team' : 'Flying monkeys',\n")
-                fo.write("      'destination' : 'ysbecca@gmail.com',\n")
-                fo.write("      'transactions' : [\n")
-                contents = "{\n)           'time': '8004',\n)          'type' : 'buy',\n)          'price' : 120,\n)          'manager' : 'Manager1',\n)          'strategy' : 'EMA'\n);      }]}\n')"
+                fo = open("trans.json", "w")
+                fo.write('  { "team" : "Flying monkeys",\n')
+                fo.write('      "destination" : "ysbecca@gmail.com",\n')
+                fo.write('      "transactions" : [')
+                contents = '{\n           "time": "8004",\n          "type" : "buy",\n          "price" : 120,\n          "manager" : "Manager1",\n          "strategy" : "EMA"\n      }]}\n'
                 for trans in transactions:
                     for i in range(len(transactions[trans])):
-                        contents.replace('8004', transactions[trans][i]['time'])
-                        contents.replace('buy', transactions[trans][i]['type'])
-                        contents.replace('120', transactions[trans][i]['price'])
-                        contents.replace('Manager1', transactions[trans][i]['manager'])
-                        contents.replace('EMA', transactions[trans][i]['strategy'])
+                        contents.replace("8004", transactions[trans][i]["time"])
+                        contents.replace("buy", transactions[trans][i]["type"])
+                        contents.replace("120", transactions[trans][i]["price"])
+                        contents.replace("Manager1", transactions[trans][i]["manager"])
+                        contents.replace("EMA", transactions[trans][i]["strategy"])
 
-                print 'Generated JSON data for curl to e-signlive: '
-                f.write(contents)
+
+                print "Generated JSON data for curl to e-signlive: "
+                fo.write(contents)
                 fo.close()
 
-                cmd = "curl -X 'POST' -H 'Authorization: Basic Y29kZWphbTpBRkxpdGw0TEEyQWQx' -H 'Content-Type:application/json' --data-binary @trans.json 'https://stage-api.e-signlive.com/aws/rest/services/codejam'"
+                cmd = 'curl -X "POST" -H "Authorization: Basic Y29kZWphbTpBRkxpdGw0TEEyQWQx" -H "Content-Type:application/json" --data-binary @trans.json "https://stage-api.e-signlive.com/aws/rest/services/codejam"'
                 re = commands.getstatusoutput(cmd)
                 temp = re[1]
                 print temp
-                data = ''
+                data = ""
                 for i in range(len(temp)):
-                    if temp[i] == '{':
+                    if temp[i] == "{":
                         while i != len(temp):
                             data += temp[i]
                             print data
                             i += 1
 
-                print data + '<---- final'
+                print data + "<---- final"
 
                 self.emit('ceremony', eval(data)) # format {{'ceremonyId':'T5ZWzanNFprSdKlcnG2m8wmIvNoV'}}
 
