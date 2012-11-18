@@ -53,6 +53,7 @@ class GenericStrategyMan( threading.Thread ):
 		  sys.exit(1)
 		 
 		try:
+		  print "init connection"
 		  self.web_soc.connect((HOST, self.PORT))
 		  pass
 		except socket.error, msg:
@@ -77,7 +78,7 @@ class GenericStrategyMan( threading.Thread ):
 		while not self.exitFlag:
 	        	if not self.inputQueue.empty():
 	            		data = self.inputQueue.get()
-	            		self.tick += 1 
+	            		#self.tick += 1 
 	            		self.process(data)
 	  
 
@@ -90,7 +91,7 @@ class GenericStrategyMan( threading.Thread ):
 		Parameters:
 			point -- the new price value to process
 		"""
-		print "Processing "+str(point)+" at " + self.strategyType
+		#print "Processing "+str(point)+" at " + self.strategyType
 		
 		
 		self.averages['slow'] = self.strategies['slow'].update(point)
@@ -140,10 +141,11 @@ class GenericStrategyMan( threading.Thread ):
 
 	def buy(self):
 		#cmd, sType, transactions, manager, time)
- 		self.bsManager.send("B", self.strategyType, self.tQueue, self.getManager(self.strategyType), self.tick, self.web_soc)
-
+		#print "before clock at " + str(self.tick.get())
+ 		self.bsManager.send("B", self.strategyType, self.tQueue, self.getManager(self.strategyType), self.tick.get(), self.web_soc)
+ 		#print "after clock at " + str(self.tick.get())
 	def sell(self):
-		self.bsManager.send("S", self.strategyType,self.tQueue, self.getManager(self.strategyType), self.tick, self.web_soc)
+		self.bsManager.send("S", self.strategyType,self.tQueue, self.getManager(self.strategyType), self.tick.get(), self.web_soc)
 
 	def getManager(self, sType):
 		"""
@@ -156,7 +158,7 @@ class GenericStrategyMan( threading.Thread ):
 		"""
 
 		strategyType = 0
-		time = self.tick + 32400
+		time = self.tick.get() + 32400
 		if sType == 'sma':
 			strategyType = 0
 		elif sType == 'lwma':

@@ -10,6 +10,7 @@ from tmaManager import tmaManager
 from lwmaManager import lwmaManager
 from emaManager import emaManager 
 
+
 import genericStrategyMan
 import signal
 HOST = 'localhost'
@@ -36,8 +37,8 @@ except socket.error, msg:
   sys.exit(2)
 
 #socket that we receive start flag from Webserver
-
-clock = 0
+from sharedClock import sharedClock
+clock = sharedClock()
 startFlag = True
 
 # intialize input and output Q's for each of the 4 strategy managers
@@ -47,19 +48,20 @@ transactionQueues = {'sma': Queue.Queue(), 'lwma': Queue.Queue(), 'ema': Queue.Q
 
 
 sma = smaManager(1, 'sma', inputQueues['sma'], clock, outputQueues['sma'], transactionQueues['sma'])
-#lwma = lwmaManager(2, 'lwma', inputQueues['lwma'], clock, outputQueues['lwma'], transactionQueues['lwma'])
-#ema = emaManager(3, 'ema', inputQueues['ema'], clock, outputQueues['ema'], transactionQueues['ema'])
-#tma = tmaManager(4, 'tma', inputQueues['tma'], clock, outputQueues['tma'], transactionQueues['tma'])
+lwma = lwmaManager(2, 'lwma', inputQueues['lwma'], clock, outputQueues['lwma'], transactionQueues['lwma'])
+ema = emaManager(3, 'ema', inputQueues['ema'], clock, outputQueues['ema'], transactionQueues['ema'])
+tma = tmaManager(4, 'tma', inputQueues['tma'], clock, outputQueues['tma'], transactionQueues['tma'])
 
 # start manager threads
 threads = []
 threads.append(sma)
-#threads.append(lwma)
-#threads.append(ema)
-#threads.append(tma)
+threads.append(lwma)
+threads.append(ema)
+threads.append(tma)
 
 for i in range(len(threads)):
     threads[i].start()
+    time.sleep(0.2)
     #pass
 
 print "waiting to start"
@@ -82,6 +84,8 @@ byteSize = 1
 data = exchange_sock.recv(byteSize)
 string_del = []
 
+from time import time
+start_time = time()
 while len(data):
     #print "data read --> "+data
     if(data.rfind("C") != -1):
@@ -94,8 +98,10 @@ while len(data):
             inputQueues[q].put(point)
             
         string_del = []
-        clock += 1
+        clock.add(1)
     else:
         string_del.append(data)
 
     data = exchange_sock.recv(byteSize)
+end_time = time()
+print "elapsed : " + str(start_time-end_time) 
