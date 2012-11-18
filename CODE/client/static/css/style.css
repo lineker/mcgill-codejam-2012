@@ -3,4 +3,29 @@
     width: 95%;
 }
 
+#start {
+    width: 45%;
+    margin-right: 20px;
+    margin-bottom: 10px;
+}
 
+#report {
+    width: 45%;
+    margin-bottom: 10px;
+}
+
+#transactions {
+    height: 300px;
+    overflow: auto;
+}
+
+.transaction {
+    font-size: 12px;
+    border-top: 1px #D1D1D1 solid;
+    padding: 5px;
+}
+
+.transaction .type {
+    font-size: 14px;
+    font-weight: bold;
+}
