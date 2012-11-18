@@ -33,11 +33,11 @@ class GenericStrategyMan( threading.Thread ):
 			transactions -- array of trade records
 		"""
 		threading.Thread.__init__(self)
-       		self.tQueue = transQ
-        	self.threadID = threadID
-        	self.name = name
-        	self.inputQueue = inq
-        	self.outputQueue = outq
+   		self.tQueue = transQ
+    	self.threadID = threadID
+    	self.name = name
+    	self.inputQueue = inq
+    	self.outputQueue = outq
 		self.strategyType = ""
 		self.strategies = {'slow': None, 'fast': None }
 		self.tick = clock
@@ -62,7 +62,7 @@ class GenericStrategyMan( threading.Thread ):
 	        	if not self.inputQueue.empty():
 	            		data = self.inputQueue.get()
 	            		self.tick += 1 
-	            		self.process(self, data)
+	            		self.process(data)
 	  
 
 	def process(self, point):
