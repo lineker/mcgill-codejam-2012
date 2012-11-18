@@ -41,7 +41,6 @@ class GenericStrategyMan( Thread.threading ):
 		self.strategies = {'slow': None, 'fast': None }
 		self.tick = clock
 		self.HOST = 'localhost'
-		self.PORT = 0
 		self.exitFlag = False
 		""" 
 		PORTS:
