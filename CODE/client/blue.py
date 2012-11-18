@@ -64,6 +64,7 @@ while not startFlag:
 # now we start processing
 print "we got here"
 
+exchange_sock.send("H\n") # start the feed
 data = exchange_sock.recv(46)
 string = ""
 string_del = ""
