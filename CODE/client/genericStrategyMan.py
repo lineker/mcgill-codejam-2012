@@ -33,21 +33,21 @@ class GenericStrategyMan( threading.Thread ):
 			transactions -- array of trade records
 		"""
 		threading.Thread.__init__(self)
-   		self.tQueue = transQ
-    	self.threadID = threadID
-    	self.name = name
-    	self.inputQueue = inq
-    	self.outputQueue = outq
+		self.tQueue = transQ
+		self.threadID = threadID
+		self.name = name
+		self.inputQueue = inq
+		self.outputQueue = outq
 		self.strategies = {'slow': None, 'fast': None }
 		self.tick = clock
 		self.HOST = 'localhost'
 		self.exitFlag = False
 		""" 
-		PORTS:
-		sma at 3001
-		lwma at 3002
-		ema at 3003
-		tma at 3004
+			PORTS:
+			sma at 3001
+			lwma at 3002
+			ema at 3003
+			tma at 3004
 		"""
 		self.averages = {'slow': None, 'fast': None}
 		self.trend = 0
