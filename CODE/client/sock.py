@@ -1,7 +1,7 @@
 from gevent import monkey; monkey.patch_all()
 
 import gevent
-
+import commands
 from time import time
 from random import random
 from bottle import Bottle, request
@@ -86,7 +86,20 @@ class Data(BaseNamespace, BroadcastMixin):
                     gevent.sleep(0.1)
                 else:
                     fulldata = fulldata + data
-        conn.close()
+    
+            def on_report(self):
+                re = commands.getstatusoutput("curl -X 'POST' -H 'Authorization: Basic Y29kZWphbTpBRkxpdGw0TEEyQWQx' -H 'Content-Type:application/json' --data-binary @test.json 'https://stage-api.e-signlive.com/aws/rest/services/codejam'")
+                temp = re[1]
+                data = ""
+                for i in range(len(temp)):
+                    if temp[i] == "{":
+                        while i != len(temp):
+                            data += temp[i]
+                            print data
+                            i += 1
+                self.emit('data' : data) # re = {{"ceremonyId":"T5ZWzanNFprSdKlcnG2m8wmIvNoV"}}
+
+                conn.close()
         
 
 @app.route('/socket.io/<arg:path>')
