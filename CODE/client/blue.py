@@ -29,7 +29,7 @@ except socket.error, msg:
   sys.stderr.write("[ERROR] %s\n" % msg[1])
   sys.exit(2)
 
-
+clock = 0
 startFlag = True
 
 # intialize input and output Q's for each of the 4 strategy managers
@@ -38,10 +38,10 @@ outputQueues = {'sma': Queue.Queue(), 'lwma': Queue.Queue(), 'ema': Queue.Queue(
 transactionQueues = {'sma': Queue.Queue(), 'lwma': Queue.Queue(), 'ema': Queue.Queue(), 'tma': Queue.Queue()}
 
 
-sma = smaManager(1, 'sma', inputQueues['sma'], outputQueues['sma'], transactionQueues['sma'])
-lwma = lwmaManager(2, 'lwma', inputQueues['lwma'], outputQueues['lwma'], transactionQueues['lwma'])
-ema = emaManager(3, 'ema', inputQueues['ema'], outputQueues['ema'], transactionQueues['ema'])
-tma = tmaManager(4, 'tma', inputQueues['tma'], outputQueues['tma'], transactionQueues['tma'])
+sma = smaManager(1, 'sma', inputQueues['sma'], clock, outputQueues['sma'], transactionQueues['sma'])
+lwma = lwmaManager(2, 'lwma', inputQueues['lwma'], clock, outputQueues['lwma'], transactionQueues['lwma'])
+ema = emaManager(3, 'ema', inputQueues['ema'], clock, outputQueues['ema'], transactionQueues['ema'])
+tma = tmaManager(4, 'tma', inputQueues['tma'], clock, outputQueues['tma'], transactionQueues['tma'])
 
 # start manager threads
 threads = []
@@ -100,6 +100,7 @@ while len(data):
     print buff
     for point in buff:
         # pass point to strategyman
+        clock += 1
         for q in inputQueues:
             inputQueues[q].put(point)
             print point
