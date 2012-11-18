@@ -13,7 +13,6 @@ from emaManager import emaManager
 import genericStrategyMan
 
 
-stratMan = StrategyMan()
 HOST = 'localhost'
 PORT = 3000
 
