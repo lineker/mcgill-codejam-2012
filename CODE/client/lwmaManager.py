@@ -6,7 +6,7 @@ from genericStrategyMan import GenericStrategyMan
 import threading
 
 class lwmaManager(GenericStrategyMan):
-
+	PORT = 9002
 	def __init__(self, threadID, name, inq, clock, outq, transQ):
 		super(lwmaManager, self).__init__(threadID, name, inq, clock, outq, transQ)
 

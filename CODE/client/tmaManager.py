@@ -6,7 +6,7 @@ from genericStrategyMan import GenericStrategyMan
 import threading
 
 class tmaManager(GenericStrategyMan):
-
+	PORT = 9004
 	def __init__(self, threadID, name, inq, clock, outq, transQ):
 		super(tmaManager, self).__init__(threadID, name, inq, clock, outq, transQ)
 

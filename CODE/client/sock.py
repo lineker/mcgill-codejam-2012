@@ -8,25 +8,32 @@ from bottle import Bottle, request
 from socketio import server, socketio_manage
 from socketio.namespace import BaseNamespace
 from socketio.mixins import BroadcastMixin
+import socket
 
 app = Bottle()
 
 class Data(BaseNamespace, BroadcastMixin):
 
+    def on_start(self):
+        self.on_ready(True)
+
     def on_ready(self, active):
+
+        # As server
+        s = socket.socket()
+        HOST = "localhost"
+        PORT = 9001
+        s.bind((HOST, PORT))
+        s.listen(1)
+        print "waiting for blue"
+        conn, addr = s.accept()
+
         # As client
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         s.connect(("127.0.0.1", 3333))
         s.send("H\n")
         data = s.recv(1024)
         s.close()
-
-        # As server
-        HOST = "localhost"
-        PORT = 9001
-        s.bind((HOST, PORT))
-        s.listen(1)
-        conn, addr = s.accept()
 
         while 1:
             data = conn.recv(1024)

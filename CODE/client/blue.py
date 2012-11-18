@@ -23,13 +23,12 @@ def signal_handler(signal, frame):
 
 #hack ctrl+D
 signal.signal(signal.SIGINT, signal_handler)
-
 try:
   exchange_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 except socket.error, msg:
   sys.stderr.write("[ERROR] %s\n" % msg[1])
   sys.exit(1)
- 
+
 try:
   exchange_sock.connect((HOST, PORT))
 except socket.error, msg:
@@ -47,17 +46,17 @@ outputQueues = {'sma': Queue.Queue(), 'lwma': Queue.Queue(), 'ema': Queue.Queue(
 transactionQueues = {'sma': Queue.Queue(), 'lwma': Queue.Queue(), 'ema': Queue.Queue(), 'tma': Queue.Queue()}
 
 
-sma = smaManager(1, 'sma', inputQueues['sma'], clock, outputQueues['sma'], transactionQueues['sma'], 9001)
-lwma = lwmaManager(2, 'lwma', inputQueues['lwma'], clock, outputQueues['lwma'], transactionQueues['lwma'],9002)
-ema = emaManager(3, 'ema', inputQueues['ema'], clock, outputQueues['ema'], transactionQueues['ema'],9003)
-tma = tmaManager(4, 'tma', inputQueues['tma'], clock, outputQueues['tma'], transactionQueues['tma'],9004)
+sma = smaManager(1, 'sma', inputQueues['sma'], clock, outputQueues['sma'], transactionQueues['sma'])
+#lwma = lwmaManager(2, 'lwma', inputQueues['lwma'], clock, outputQueues['lwma'], transactionQueues['lwma'])
+#ema = emaManager(3, 'ema', inputQueues['ema'], clock, outputQueues['ema'], transactionQueues['ema'])
+#tma = tmaManager(4, 'tma', inputQueues['tma'], clock, outputQueues['tma'], transactionQueues['tma'])
 
 # start manager threads
 threads = []
 threads.append(sma)
-threads.append(lwma)
-threads.append(ema)
-threads.append(tma)
+#threads.append(lwma)
+#threads.append(ema)
+#threads.append(tma)
 
 for i in range(len(threads)):
     threads[i].start()
@@ -72,7 +71,7 @@ print 'Connected by', addr
 
 start = conn.recv(1)
 while start != "H":
-    start = webfeedback.recv(1)
+    start = conn.recv(1)
 conn.close()
 
 # now we start processing
