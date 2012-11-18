@@ -10,7 +10,7 @@
 }
 
 #transactions {
-    height: 250px;
+    height: 160px;
     overflow: auto;
 }
 
@@ -23,4 +23,12 @@
 .transaction .type {
     font-size: 14px;
     font-weight: bold;
+}
+
+#notifications {
+    background-color: #FAFAFA;
+}
+
+#style {
+    margin: 0 auto;
 }

@@ -46,19 +46,20 @@
           <div class="well sidebar-nav">
             <ul class="nav nav-list">
               <li class="nav-header">Moving Average Selections</li>
-              <li class="active"><a href="#">Simple Moving Average (SMA)</a></li>
-              <li><a href="#">Linear Weighted Moving Average (LWMA)</a></li>
-              <li><a href="#">Exponential Moving Average (EMA)</a></li>
-              <li><a href="#">Triangular Moving Average (TMA)</a></li>
+              <li class="active"><a class="charts" href="#">Simple Moving Average (SMA)</a></li>
+              <li><a class="charts" href="#">Linear Weighted Moving Average (LWMA)</a></li>
+              <li><a class="charts" href="#">Exponential Moving Average (EMA)</a></li>
+              <li><a class="charts" href="#">Triangular Moving Average (TMA)</a></li>
               <li class="nav-header">System</a></li>
-              <li><a href="#">View Managers Schedules</a></li>
+              <li><a id="managers" href="#">View Managers Schedules</a></li>
             </ul>
           </div><!--/.well -->
           <div class="well sidebar-nav">
             <button id="start" class="btn btn-success">Start Trading</button>
-            <button id="report" class="btn btn-danger disabled">Report Data</button>
+            <button id="report" class="btn btn-success">Report Data</button>
             <button id="pause" class="btn btn-danger disabled">Pause Trading</button>
-            <button id="reset" class="btn btn-danger disabled">Reset Trading</button>
+            <button id="reset" class="btn btn-danger disabled">Reset Trading</button>   
+            <div id="notifications" class="well">Welcome to the TeamX Algorithmic Trading Application.</div>
           </div>
           <div id="transactions" class="well sidebar-nav">
           </div>
@@ -66,6 +67,7 @@
         <div class="span9">
           <div id="simple" class="average">
           </div>
+          <img id="schedule" src="/img/managers.png" style="display: none;"/>
         </div><!--/span-->
       </div><!--/row-->
 
