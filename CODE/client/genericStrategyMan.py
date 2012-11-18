@@ -15,7 +15,7 @@ HOST = "localhost"
 
 class GenericStrategyMan( threading.Thread ):
 
-	def __init__(self, threadID, name, inq, clock, outq, transQ, port):
+	def __init__(self, threadID, name, inq, clock, outq, transQ):
 
 		""" 
 		Attributes:
@@ -46,23 +46,25 @@ class GenericStrategyMan( threading.Thread ):
 		self.bsManager = BuySellManager()
 
 		try:
-		  self.web_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+		  self.web_soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+		  pass
 		except socket.error, msg:
 		  sys.stderr.write("[ERROR] %s\n" % msg[1])
 		  sys.exit(1)
 		 
 		try:
-		  self.web_soc.connect((HOST, port))
+		  self.web_soc.connect((HOST, self.PORT))
+		  pass
 		except socket.error, msg:
 		  sys.stderr.write("[ERROR] %s\n" % msg[1])
 		  sys.exit(2)
 
 		""" 
 			PORTS:
-			sma at 3001
-			lwma at 3002
-			ema at 3003
-			tma at 3004
+			sma at 9001
+			lwma at 9002
+			ema at 9003
+			tma at 9004
 		"""
 		self.averages = {'slow': None, 'fast': None}
 		self.trend = 0
@@ -95,11 +97,11 @@ class GenericStrategyMan( threading.Thread ):
 		self.averages['fast'] = self.strategies['fast'].update(point)
 
 		# output point and the two averages
-		self.web_soc.send(str(point)+"|"+str(self.averages['slow'])+"|"+self.averages['fast']+"\n")
+		self.web_soc.send("A|"+str(point)+"|"+str(self.averages['slow'])+"|"+self.averages['fast']+"\n")
 		#self.outputQueue.put({'price': point, 'slowAvg': self.averages['slow'], 'fastAvg': self.averages['fast'], 'time':self.tick})
 
 		result = self.detect_crossover()
-		
+
 		if result:
 			if result['action'] == 0:
 				# buy
@@ -139,10 +141,10 @@ class GenericStrategyMan( threading.Thread ):
 
 	def buy(self):
 		#cmd, sType, transactions, manager, time)
- 		self.bsManager.send("B", self.strategyType, self.tQueue, self.getManager(self.strategyType), self.tick)
+ 		self.bsManager.send("B", self.strategyType, self.tQueue, self.getManager(self.strategyType), self.tick, self.web_soc)
 
 	def sell(self):
-		self.bsManager.send("S", self.strategyType,self.tQueue, self.getManager(self.strategyType), self.tick)
+		self.bsManager.send("S", self.strategyType,self.tQueue, self.getManager(self.strategyType), self.tick, self.web_soc)
 
 	def getManager(self, sType):
 		"""

@@ -4,7 +4,7 @@ Buy sell manager.
 """
 
 import sys
-from trade_record import TradeRecord
+
 import socket
 
 # new BuySellManager
@@ -28,7 +28,7 @@ class BuySellManager:
 		  sys.exit(2)
 
 
-	def send(self, cmd, sType, transactions, manager, time):
+	def send(self, cmd, sType, transactions, manager, time, web_sock):
 		"""
 		Sends the given command to the MS exchange using correct port and HOST
 
@@ -44,7 +44,8 @@ class BuySellManager:
 			else:
 				#create transaction
 				print "resp for "+sType+" cmd : "+response
-				transactions[sType].put([time,cmd,float(response),manager,sType])
+				#transactions[sType].put([time,cmd,float(response),manager,sType])
+				web_sock.send("T|"+str(time)+"|"+cmd+"|"+response.strip()+"|"+manager+"|"+sType+"\n")
 		except socket.error, msg:
 		  sys.stderr.write("[ERROR] %s\n" % msg[1])
 		
