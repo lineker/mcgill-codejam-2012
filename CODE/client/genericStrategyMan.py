@@ -7,12 +7,15 @@ Keeps track of the four strategies, detects crossovers, and logs trade records.
 import sys
 from trade_record import TradeRecord
 import socket
+import threading
+import Queue
 
+# new BuySellManager
 
+class GenericStrategyMan( threading.Thread ):
 
-class GenericStrategyMan:
+	def __init__(self, threadID, name, inq, clock, outq, transQ):
 
-	def __init__(self):
 		""" 
 		Attributes:
 			tick -- current "time", updated per point
@@ -29,13 +32,18 @@ class GenericStrategyMan:
 				1 -- slow on bottom, fast on top (watch for downward trend)
 			transactions -- array of trade records
 		"""
-		self.strategyType = ""
+		threading.Thread.__init__(self)
+		self.tQueue = transQ
+		self.threadID = threadID
+		self.name = name
+		self.inputQueue = inq
+		self.outputQueue = outq
 		self.strategies = {'slow': None, 'fast': None }
-		self.tick = 0
+		self.tick = clock
 		self.HOST = 'localhost'
-		self.PORT = 0
+		self.exitFlag = False
 		""" 
-		PORTS:
+			PORTS:
 			sma at 3001
 			lwma at 3002
 			ema at 3003
@@ -46,20 +54,17 @@ class GenericStrategyMan:
 		self.mSchedule = [[1, 2, 1, 2], [3, 4, 3, 4], [1, 2, 1, 2], [1, 2, 1, 2], [3, 4, 3, 4], [3, 4, 3, 4], [5, 6, 5, 6], [7, 8, 7, 8]]
 		self.transactions = []
 
-		try:
-		  self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-		except socket.error, msg:
-		  sys.stderr.write("[ERROR] %s\n" % msg[1])
-		  sys.exit(1)
-		 
-		try:
-		  self.sock.connect((self.HOST, self.PORT))
-		except socket.error, msg:
-		  sys.stderr.write("[ERROR] %s\n" % msg[1])
-		  sys.exit(2)
 
- 		
-	def process(self, point, time):
+	def run(self):
+		print "Starting " + self.strategyType
+		while not self.exitFlag:
+	        	if not self.inputQueue.empty():
+	            		data = self.inputQueue.get()
+	            		self.tick += 1 
+	            		self.process(data)
+	  
+
+	def process(self, point):
 		"""
 		Updates the moving averages, sends the json to the GUI, then detects crossovers. 
 		If necessary it performs the correct action to buy or sell, and if a trade
@@ -68,28 +73,31 @@ class GenericStrategyMan:
 		Parameters:
 			point -- the new price value to process
 		"""
-		self.tick = time
+		print "Processing at " + self.strategyType
+		print point
 		
 		self.averages['slow'] = self.strategies['slow'].update(point)
 		self.averages['fast'] = self.strategies['fast'].update(point)
 
-		result = self.detect_crossover(self.tick)
+		# output point and the two averages
+		self.outputQueue.put({'price': point, 'slowAvg': self.averages['slow'], 'fastAvg': self.averages['fast'], 'time':self.tick})
+
+		result = self.detect_crossover()
 		
 		if result:
 			if result['action'] == 0:
 				# buy
 				self.buy()
-				self.store_record(0, self.tick, self.strategyType, point)
+				self.store_record(0, self.strategyType, point)
 				
 			elif result['action'] == 1:
 				# sell
 				self.sell()
-				self.store_record(1, self.tick, self.strategyType, point)
+				self.store_record(1, self.strategyType, point)
+			
 
-		# send data to GUI here!
 
-
-	def detect_crossover(self, time):
+	def detect_crossover(self):
 		"""
 		Detects a crossover between the slow and fast moving averages for each strategy.
 		Returns:
@@ -99,8 +107,6 @@ class GenericStrategyMan:
 			and the strategy type of the strategy which had the crossover.
 		"""
 
-
-				# when time = 0 set trend
 		if self.trend == 0:
 			if self.averages['fast'] > self.averages['slow']:
 				self.trend = -1
@@ -120,21 +126,14 @@ class GenericStrategyMan:
 
 
 	def buy(self):
- 		self.send("B\n")
+		# TODO call buy sell manager.
+ 		# self.send("B\n")
  		print "Buying something from " + self.strategyType + "\n"
 
 	def sell(self):
-		self.send("S\n")
+		# self.send("S\n")
 		print  "Selling something " + self.strategyType + "\n"
 
-	def send(self, cmd):
-		"""
-		Sends the given command to the MS exchange using correct port and HOST
-
-		Parameters:
-			cmd -- the action type
-		"""
-		self.sock.send(cmd + "\n")
 
 
 	def store_record(self, actionType, time, point):
@@ -147,7 +146,7 @@ class GenericStrategyMan:
 			actionType: 1 -- sell
 		"""
 
-		manID = self.getManager(time, self.strategyType)
+		manID = self.getManager(self.strategyType)
 	
 		if actionType:
 			# add the new trade to the record
@@ -157,8 +156,9 @@ class GenericStrategyMan:
 
 		newRecord.send()
 		self.transactions.append(newRecord)
+		self.tQueue.put(newRecord.toHash())
 
-	def getManager(self, tick, sType):
+	def getManager(self, sType):
 		"""
 		Returns the manager supervising the given strategy at a given time.
 		Parameters:
@@ -169,7 +169,7 @@ class GenericStrategyMan:
 		"""
 
 		strategyType = 0
-		time = tick + 32400
+		time = self.tick + 32400
 		if sType == 'sma':
 			strategyType = 0
 		elif sType == 'lwma':

@@ -1,5 +1,5 @@
 import sys
-from json import dumps
+#from json import dumps
 
 class TradeRecord:
 
@@ -20,10 +20,11 @@ class TradeRecord:
 		"""
 		sends the JSON form of itself to the Silanus API for signing by manager
 		"""
-		return dumps({
-				"time": self.time,
-				"type": self.strategyType,
-				"price": self.price,
-				"manager": self.manager,
-				"strategy": self.strategyType})
- 
+		# return dumps({
+		# 		"time": self.time,
+		# 		"type": self.strategyType,
+		# 		"price": self.price,
+		# 		"manager": self.manager,
+		# 		"strategy": self.strategyType})
+ 	def toHash(self):
+ 		return {'price': self.price, 'managerID': self.manager, 'action': self.action, 'time': self.time, 'strategyType': self.strategyType}

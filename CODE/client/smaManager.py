@@ -1,17 +1,16 @@
 #!/usr/bin/env python
 import sys
-from average import Simple
+from averages import Simple
 from trade_record import TradeRecord
 import socket
-from genericStrategyManager import GenericStrategyManager
+from genericStrategyMan import GenericStrategyMan
+import threading
 
+class smaManager(GenericStrategyMan):
 
-class smaManager(GenericStrategyManager):
-
-	def __init__(self):
-		super()
+	def __init__(self, threadID, name, inq, clock, outq, transQ):
+		super(smaManager, self).__init__(threadID, name, inq, clock, outq, transQ)
 
 		self.strategyType = 'sma'
 		self.strategies['slow'] = Simple(20)
 		self.strategies['fast'] = Simple(5)
-		self.PORT = 3001

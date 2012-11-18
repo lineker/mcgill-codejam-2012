@@ -3,95 +3,111 @@
 import time
 import socket
 import sys
-import gevent
-from averages import Simple 
-from strategyman import StrategyMan
-from gevent import monkey; monkey.patch_all()
-from time import time
-from bottle import Bottle, request
-from socketio import server, socketio_manage
-from socketio.namespace import BaseNamespace
-from socketio.mixins import BroadcastMixin
+import Queue
+import threading
+from smaManager import smaManager
+from tmaManager import tmaManager
+from lwmaManager import lwmaManager
+from emaManager import emaManager 
+import genericStrategyMan
+from sock import sock
 
-app = Bottle()
+HOST = 'localhost'
+PORT = 3000
 
-class Blue(BaseNamespace, BroadcastMixin):
+try:
+  exchange_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+except socket.error, msg:
+  sys.stderr.write("[ERROR] %s\n" % msg[1])
+  sys.exit(1)
+ 
+try:
+  exchange_sock.connect((HOST, PORT))
+except socket.error, msg:
+  sys.stderr.write("[ERROR] %s\n" % msg[1])
+  sys.exit(2)
 
-    def on_ready(self):
-        def generate_data():
-            # Get connection to the MS exchange on exchange_sock
-            stratMan = StrategyMan()
-            HOST = 'localhost'
-            PORT = 3000
+clock = 0
+startFlag = 1
 
-            try:
-              exchange_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            except socket.error, msg:
-              sys.stderr.write("[ERROR] %s\n" % msg[1])
-              sys.exit(1)
-             
-            try:
-              exchange_sock.connect((self.HOST, self.PORT))
-            except socket.error, msg:
-              sys.stderr.write("[ERROR] %s\n" % msg[1])
-              sys.exit(2)
-
-            exchange_sock.send("H\n") # start the feed
-            while True:
-                data = exchange_sock.recv(46)
-                string = ""
-                string_del = ""
-                buff = []
-                stor = []
-                index = -1
-                last_string = ""
-                while len(data):
-                    string_del = ""
-                    if last_string != "" and last_string != "C":
-                        data = last_string + data
-                        last_string = ""
-                        
-                    string_del = data.split("|")
-                    index = data.rfind("|")
-
-                    if index != -1 & (index + 1) < len(data):
-                        last_string = string_del.pop()
-                    
-                    #print string_del
-                    stor[len(stor):] = string_del
-
-                    if len(string_del) > 0:
-                        try:
-                            string_del.remove("")
-                            #detect half-read values
-                            #cut = string_del.
-
-                        except ValueError:
-                            print ""
-                        buff[0:] = map(float, string_del)
-                    print buff
-                    for point in buff:
-                        # pass point to strategyman
-                        self.stratMan.process(point)
-                        # get point and averages and send it
-                        self.emit('data', { "time": time() * 1000, "value": random() })
-                        gevent.sleep(0.5) # why?
-
-                    data = sock.recv(46)    
-
-        self.spawn(generate_data)
-        sock.close()
-        print "closing socket"
+# intialize input and output Q's for each of the 4 strategy managers
+inputQueues = {'sma': Queue.Queue(), 'lwma': Queue.Queue(), 'ema': Queue.Queue(), 'tma': Queue.Queue()}
+outputQueues = {'sma': Queue.Queue(), 'lwma': Queue.Queue(), 'ema': Queue.Queue(), 'tma': Queue.Queue()}
+transactionQueues = {'sma': Queue.Queue(), 'lwma': Queue.Queue(), 'ema': Queue.Queue(), 'tma': Queue.Queue()}
 
 
-@app.route('/socket.io/<arg:path>')
-def socketio(*arg, **kw):
-    socketio_manage(request.environ, {'': Data}, request=request)
-    return "out"
+sma = smaManager(1, 'sma', inputQueues['sma'], clock, outputQueues['sma'], transactionQueues['sma'])
+lwma = lwmaManager(2, 'lwma', inputQueues['lwma'], clock, outputQueues['lwma'], transactionQueues['lwma'])
+ema = emaManager(3, 'ema', inputQueues['ema'], clock, outputQueues['ema'], transactionQueues['ema'])
+tma = tmaManager(4, 'tma', inputQueues['tma'], clock, outputQueues['tma'], transactionQueues['tma'])
 
-if __name__ == '__main__':
-    server.SocketIOServer(
-        ('localhost', 9091), app, policy_server=False).serve_forever()
+# start manager threads
+threads = []
+threads.append(sma)
+threads.append(lwma)
+threads.append(ema)
+threads.append(tma)
+
+for i in range(len(threads)):
+    threads[i].start()
+
+
+flagQueue = Queue.Queue()
+# start sock HEREEEEE, pass the transaction queues and output queues and the flag(?)
+dirtySock = sock(5, outputQueues['sma'], outputQueues['lwma'], outputQueues['ema'], outputQueues['tma'], flagQueue)
+
+dirtySock.start()
+
+
+# poll until startFlag is True
+while not startFlag:
+    # do blah
+    print ""
+
+
+# now we start processing
+print "we got here"
+
+exchange_sock.send("H\n") # start the feed
+data = exchange_sock.recv(46)
+string = ""
+string_del = ""
+buff = []
+stor = []
+index = -1
+last_string = ""
+
+while len(data):
+    string_del = ""
+    if last_string != "" and last_string != "C":
+        data = last_string + data
+        last_string = ""
+        
+    string_del = data.split("|")
+    index = data.rfind("|")
+
+    if index != -1 & (index + 1) < len(data):
+        last_string = string_del.pop()
     
-    
+    #print string_del
+    stor[len(stor):] = string_del
+
+    if len(string_del) > 0:
+        try:
+            string_del.remove("")
+            #detect half-read values
+            #cut = string_del.
+        except ValueError:
+            print ""
+
+        buff[0:] = map(float, string_del)
+    print buff
+    for point in buff:
+        # pass point to strategyman
+        clock += 1
+        for q in inputQueues:
+            inputQueues[q].put(point)
+            print point
+    data = exchange_sock.recv(46)   
+    #time.sleep(1)
 
