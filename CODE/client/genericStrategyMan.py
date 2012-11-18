@@ -74,6 +74,8 @@ class GenericStrategyMan( Thread.threading ):
 		Parameters:
 			point -- the new price value to process
 		"""
+		print "Processing at " + self.strategyType
+		print point
 		
 		self.averages['slow'] = self.strategies['slow'].update(point)
 		self.averages['fast'] = self.strategies['fast'].update(point)

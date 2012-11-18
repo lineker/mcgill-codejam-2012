@@ -27,7 +27,7 @@ except socket.error, msg:
   sys.exit(2)
 
 
-startFlag = False
+startFlag = True
 
 # intialize input and output Q's for each of the 4 strategy managers
 inputQueues = {'sma': Queue.Queue(), 'lwma': Queue.Queue(), 'ema': Queue.Queue(), 'tma': Queue.Queue()}
@@ -47,7 +47,7 @@ for key in threads:
 # poll until startFlag is True
 while not startFlag:
     # do blah
-
+    print ""
 
 
 # now we start processing
