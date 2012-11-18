@@ -36,7 +36,7 @@ class Data(BaseNamespace, BroadcastMixin):
                 parsed_data = data.split("|")
                 if parsed_data[0] == "T":
                     self.emit("transaction", {"time": parsed_data[1], "type": parsed_data[2], "price": parsed_data[3], "manager": parsed_data[4], "strategy": parsed_data[5]})
-                else if data.split("|")[0] == "A":
+                elif data.split("|")[0] == "A":
                     self.emit("average", {"price": parsed_data[1], "slow": parsed_data[2], "fast": parsed_data[3]})
 
         conn.close()
