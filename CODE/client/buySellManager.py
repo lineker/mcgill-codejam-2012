@@ -28,7 +28,7 @@ class BuySellManager:
 		  sys.exit(2)
 
 
-	def send(self, cmd, sType):
+	def send(self, cmd, sType, transactions, manager, time):
 		"""
 		Sends the given command to the MS exchange using correct port and HOST
 
@@ -36,6 +36,21 @@ class BuySellManager:
 			cmd -- the action type
 		"""
 		self.sock.send(cmd + "\n")
+		try:
+			response = self.sock.recv(100)
+			#check if is a ERROR , maybe market is already closed
+			if(str(response).rfind("E") != -1):
+				print "market ERROR"
+			else:
+				#create transaction
+				print "resp for "+sType+" cmd : "+response
+				transactions[sType].put([time,cmd,float(response),manager,sType])
+		except socket.error, msg:
+		  sys.stderr.write("[ERROR] %s\n" % msg[1])
+		  sys.exit(2)
+		
+		
 
 	def terminate(self):
 		self.sock.close()
+

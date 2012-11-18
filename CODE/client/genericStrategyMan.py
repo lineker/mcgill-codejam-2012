@@ -43,7 +43,7 @@ class GenericStrategyMan( threading.Thread ):
 		self.tick = clock
 		self.HOST = 'localhost'
 		self.exitFlag = False
-		self.bsMan = BuySellManager()
+		self.bsManager = BuySellManager()
 		""" 
 			PORTS:
 			sma at 3001
@@ -75,8 +75,8 @@ class GenericStrategyMan( threading.Thread ):
 		Parameters:
 			point -- the new price value to process
 		"""
-		print "Processing at " + self.strategyType
-		print point
+		print "Processing "+str(point)+" at " + self.strategyType
+		
 		
 		self.averages['slow'] = self.strategies['slow'].update(point)
 		self.averages['fast'] = self.strategies['fast'].update(point)
@@ -128,12 +128,11 @@ class GenericStrategyMan( threading.Thread ):
 
 
 	def buy(self):
- 		self.bsManager.send("B", self.strategyType)
- 		print "Buying something from " + self.strategyType + "\n"
+		#cmd, sType, transactions, manager, time)
+ 		self.bsManager.send("B", self.strategyType, self.tQueue, self.getManager(self.strategyType), self.tick)
 
 	def sell(self):
-		self.bsManager.send("S\n", self.strategyType)
-		print  "Selling something " + self.strategyType + "\n"
+		self.bsManager.send("S", self.strategyType,self.tQueue, self.getManager(self.strategyType), self.tick)
 
 
 
