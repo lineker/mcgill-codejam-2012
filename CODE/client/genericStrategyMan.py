@@ -54,7 +54,8 @@ class GenericStrategyMan( threading.Thread ):
 		  sys.exit(1)
 		 
 		try:
-		  self.web_soc.connect((self.HOST, self.PORT))
+		  print "trying to connect to localhost, " + str(port)
+		  self.web_soc.connect((self.HOST, port))
 		  pass
 		except socket.error, msg:
 		  sys.stderr.write("[ERROR] %s\n" % msg[1])
