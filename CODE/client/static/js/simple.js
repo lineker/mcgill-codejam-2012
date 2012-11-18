@@ -8,7 +8,27 @@ $(document).ready(function () {
             marginRight: 10,
             events: {
                 load: function() {
-                    var self = this;
+                    var price = this.series[0],
++                    sta   = this.series[1],
++                    lta   = this.series[2];
++
+                 setInterval(function() {
+                     var x = (new Date()).getTime(),
+                         // current time
+-                        y = Math.random();
+-                    series.addPoint([x, y], true, true);
++                        y1 = Math.random(),
++                        y2 = Math.random();
++                        y3 = Math.random();
++                    
+                    price.addPoint([x, y1], true, true);
++                   sta.addPoint([x, y2], true, true);
++                   lta.addPoint([x, y3], true, true);
+
+
+
+
+                    var price = this.series[0];
                     sock.emit('ready');
                     sock.on('data', function (data) {
                         var price = self.series[0],
