@@ -9,8 +9,8 @@ from smaManager import smaManager
 from tmaManager import tmaManager
 from lwmaManager import lwmaManager
 from emaManager import emaManager 
-import genericStrategyMan
 from sock import Sock
+import genericStrategyMan
 
 HOST = 'localhost'
 PORT = 3000
@@ -54,7 +54,7 @@ for i in range(len(threads)):
 
 flagQueue = Queue.Queue()
 # start sock HEREEEEE, pass the transaction queues and output queues and the flag(?)
-dirtySock = sock(5, outputQueues['sma'], outputQueues['lwma'], outputQueues['ema'], outputQueues['tma'], flagQueue)
+dirtySock = Sock(5, outputQueues['sma'], outputQueues['lwma'], outputQueues['ema'], outputQueues['tma'], flagQueue)
 
 dirtySock.start()
 

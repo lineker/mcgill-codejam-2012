@@ -1,5 +1,3 @@
-from gevent import monkey; monkey.patch_all()
-
 import gevent
 import threading
 
@@ -13,12 +11,14 @@ app = Bottle()
 class Sock(threading.Thread, BaseNamespace, BroadcastMixin):
     
     def __init__(self, thread_id, SMA, LWMA, EMA, TMA, start_flag):
+        threading.Thread.__init__(self)
         self.thread_id = thread_id
         self.queues = [SMA, LWMA, EMA, TMA]
         self.target = 0
         self.start_flag = start_flag
 
     def run(self):
+        pass
         server.SocketIOServer(
             ('localhost', 9090), app, policy_server=False).serve_forever()
 
