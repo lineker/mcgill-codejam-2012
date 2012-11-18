@@ -85,13 +85,16 @@ class Data(BaseNamespace, BroadcastMixin):
     
             def on_report(self):
                 # all transactions as json
+                cmd = "curl -X 'POST' -H 'Authorization: Basic Y29kZWphbTpBRkxpdGw0TEEyQWQx' -H 'Content-Type:application/json' --data-binary "
                 jsonData = "{'team' : 'Flying monkeys', 'destination' : 'ysbecca@gmail.com','transactions' : ["
                 for trans in transactions:
                     jsonData += str(transactions[trans])
                 jsonData += "]}"
                 print "Generated JSON data for curl to e-signlive: "
                 print jsonData
-                re = commands.getstatusoutput("curl -X 'POST' -H 'Authorization: Basic Y29kZWphbTpBRkxpdGw0TEEyQWQx' -H 'Content-Type:application/json' --data-binary @test.json 'https://stage-api.e-signlive.com/aws/rest/services/codejam'")
+                cmd += jsonData
+                cmd += " 'https://stage-api.e-signlive.com/aws/rest/services/codejam'"
+                re = commands.getstatusoutput()
                 temp = re[1]
                 data = ""
                 for i in range(len(temp)):
@@ -101,7 +104,7 @@ class Data(BaseNamespace, BroadcastMixin):
                             print data
                             i += 1
 
-                #self.emit('data' : data) # format {{"ceremonyId":"T5ZWzanNFprSdKlcnG2m8wmIvNoV"}}
+                self.emit('ceremony' : eval(data)) # format {{"ceremonyId":"T5ZWzanNFprSdKlcnG2m8wmIvNoV"}}
 
                 conn.close()
         
