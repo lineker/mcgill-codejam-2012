@@ -82,7 +82,7 @@ class GenericStrategyMan( threading.Thread ):
 		# output point and the two averages
 		self.outputQueue.put({'price': point, 'slowAvg': self.averages['slow'], 'fastAvg': self.averages['fast'], 'time':self.tick})
 
-		result = self.detect_crossover(self)
+		result = self.detect_crossover()
 		
 		if result:
 			if result['action'] == 0:
