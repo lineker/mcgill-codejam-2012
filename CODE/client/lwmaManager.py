@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 import sys
 from averages import LinearWeighted
-from trade_record import TradeRecord
 import socket
 from genericStrategyMan import GenericStrategyMan
 import threading
