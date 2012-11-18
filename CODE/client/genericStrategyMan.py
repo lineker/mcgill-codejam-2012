@@ -42,6 +42,7 @@ class GenericStrategyMan( threading.Thread ):
 		self.strategies = {'slow': None, 'fast': None }
 		self.tick = clock
 		self.HOST = 'localhost'
+		self.PORT = '9001'
 		self.exitFlag = False
 		self.bsManager = BuySellManager()
 
@@ -53,7 +54,7 @@ class GenericStrategyMan( threading.Thread ):
 		  sys.exit(1)
 		 
 		try:
-		  self.web_soc.connect((HOST, self.PORT))
+		  self.web_soc.connect((self.HOST, self.PORT))
 		  pass
 		except socket.error, msg:
 		  sys.stderr.write("[ERROR] %s\n" % msg[1])

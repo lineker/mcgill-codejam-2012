@@ -47,10 +47,10 @@ outputQueues = {'sma': Queue.Queue(), 'lwma': Queue.Queue(), 'ema': Queue.Queue(
 transactionQueues = {'sma': Queue.Queue(), 'lwma': Queue.Queue(), 'ema': Queue.Queue(), 'tma': Queue.Queue()}
 
 
-sma = smaManager(1, 'sma', inputQueues['sma'], clock, outputQueues['sma'], transactionQueues['sma'], 9001)
-lwma = lwmaManager(2, 'lwma', inputQueues['lwma'], clock, outputQueues['lwma'], transactionQueues['lwma'],9002)
-ema = emaManager(3, 'ema', inputQueues['ema'], clock, outputQueues['ema'], transactionQueues['ema'],9003)
-tma = tmaManager(4, 'tma', inputQueues['tma'], clock, outputQueues['tma'], transactionQueues['tma'],9004)
+sma = smaManager(1, 'sma', inputQueues['sma'], clock, outputQueues['sma'], transactionQueues['sma'])
+lwma = lwmaManager(2, 'lwma', inputQueues['lwma'], clock, outputQueues['lwma'], transactionQueues['lwma'])
+ema = emaManager(3, 'ema', inputQueues['ema'], clock, outputQueues['ema'], transactionQueues['ema'])
+tma = tmaManager(4, 'tma', inputQueues['tma'], clock, outputQueues['tma'], transactionQueues['tma'])
 
 # start manager threads
 threads = []
