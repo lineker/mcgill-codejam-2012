@@ -122,12 +122,11 @@ class GenericStrategyMan( threading.Thread ):
 		"""
 
 		if self.trend == 0:
-			if self.averages['fast'] > self.averages['slow']:
+			if self.averages['fast'] < self.averages['slow']:
 				self.trend = -1
-			elif self.averages['fast'] < self.averages['slow']:
+			elif self.averages['fast'] >= self.averages['slow']:
 				self.trend = 1
-			else:
-				self.trend = 0
+
 		else: 
 			if self.trend == -1 and self.averages['fast'] >= self.averages['slow']:
 				self.trend = 1
