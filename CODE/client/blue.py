@@ -29,7 +29,7 @@ except socket.error, msg:
   sys.exit(2)
 
 clock = 0
-startFlag = True
+startFlag = 1
 
 # intialize input and output Q's for each of the 4 strategy managers
 inputQueues = {'sma': Queue.Queue(), 'lwma': Queue.Queue(), 'ema': Queue.Queue(), 'tma': Queue.Queue()}
@@ -62,6 +62,7 @@ while not startFlag:
 
 
 # now we start processing
+print "we got here"
 
 data = exchange_sock.recv(46)
 string = ""
@@ -91,7 +92,6 @@ while len(data):
             string_del.remove("")
             #detect half-read values
             #cut = string_del.
-
         except ValueError:
             print ""
 
@@ -103,6 +103,6 @@ while len(data):
         for q in inputQueues:
             inputQueues[q].put(point)
             print point
-
-    time.sleep()
+    data = exchange_sock.recv(46)   
+    time.sleep(1)
 
