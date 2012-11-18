@@ -5,9 +5,12 @@ import socket
 import sys
 import Queue
 import threading
-from strategyman import StrategyMan
 from time import time
-import smaManager, tmaManager, lwmaManager, emaManager, genericStrategyMan
+from smaManager import smaManager
+from tmaManager import tmaManager
+from lwmaManager import lwmaManager
+from emaManager import emaManager 
+import genericStrategyMan
 
 
 stratMan = StrategyMan()
