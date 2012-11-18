@@ -49,10 +49,10 @@ class Blue:
         self.outputQueues = outQueues
         self.transactionQueues = tQueues
 
-        sma = smaManager(1, 'sma', inputQueues['sma'], self.clock, outputQueues['sma'], transactionQueues['sma'])
-        lwma = lwmaManager(2, 'lwma', inputQueues['lwma'], self.clock, outputQueues['lwma'], transactionQueues['lwma'])
-        ema = emaManager(3, 'ema', inputQueues['ema'], self.clock, outputQueues['ema'], transactionQueues['ema'])
-        tma = tmaManager(4, 'tma', inputQueues['tma'], self.clock, outputQueues['tma'], transactionQueues['tma'])
+        sma = smaManager(1, 'sma', inputQueues['sma'], self.clock, self.outputQueues['sma'], self.transactionQueues['sma'])
+        lwma = lwmaManager(2, 'lwma', inputQueues['lwma'], self.clock, self.outputQueues['lwma'], self.transactionQueues['lwma'])
+        ema = emaManager(3, 'ema', inputQueues['ema'], self.clock, self.outputQueues['ema'], self.transactionQueues['ema'])
+        tma = tmaManager(4, 'tma', inputQueues['tma'], self.clock, self.outputQueues['tma'], self.transactionQueues['tma'])
 
         # start manager threads
         threads = []
