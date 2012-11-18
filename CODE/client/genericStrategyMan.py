@@ -8,6 +8,7 @@ import sys
 from trade_record import TradeRecord
 import socket
 import threading
+import Queue
 
 # new BuySellManager
 
