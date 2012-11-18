@@ -15,7 +15,7 @@ HOST = "localhost"
 
 class GenericStrategyMan( threading.Thread ):
 
-	def __init__(self, threadID, name, inq, clock, outq, transQ):
+	def __init__(self, threadID, name, inq, clock, outq, transQ, port):
 
 		""" 
 		Attributes:
@@ -42,7 +42,7 @@ class GenericStrategyMan( threading.Thread ):
 		self.strategies = {'slow': None, 'fast': None }
 		self.tick = clock
 		self.HOST = 'localhost'
-		self.PORT = '9001'
+		self.PORT = port
 		self.exitFlag = False
 		self.bsManager = BuySellManager()
 

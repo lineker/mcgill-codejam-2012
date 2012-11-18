@@ -7,8 +7,8 @@ import threading
 
 class tmaManager(GenericStrategyMan):
 
-	def __init__(self, threadID, name, inq, clock, outq, transQ):
-		super(tmaManager, self).__init__(threadID, name, inq, clock, outq, transQ)
+	def __init__(self, threadID, name, inq, clock, outq, transQ, port):
+		super(tmaManager, self).__init__(threadID, name, inq, clock, outq, transQ, port)
 
 		self.strategyType = 'tma'
 		self.strategies['slow'] = Triangular(20)

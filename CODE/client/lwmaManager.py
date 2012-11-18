@@ -7,8 +7,8 @@ import threading
 
 class lwmaManager(GenericStrategyMan):
 
-	def __init__(self, threadID, name, inq, clock, outq, transQ):
-		super(lwmaManager, self).__init__(threadID, name, inq, clock, outq, transQ)
+	def __init__(self, threadID, name, inq, clock, outq, transQ, port):
+		super(lwmaManager, self).__init__(threadID, name, inq, clock, outq, transQ, port)
 
 		self.strategyType = 'lwma'
 		self.strategies['slow'] = LinearWeighted(20)

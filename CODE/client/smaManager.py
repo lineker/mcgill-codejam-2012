@@ -7,8 +7,8 @@ import threading
 
 class smaManager(GenericStrategyMan):
 
-	def __init__(self, threadID, name, inq, clock, outq, transQ):
-		super(smaManager, self).__init__(threadID, name, inq, clock, outq, transQ)
+	def __init__(self, threadID, name, inq, clock, outq, transQ, port):
+		super(smaManager, self).__init__(threadID, name, inq, clock, outq, transQ, port)
 
 		self.strategyType = 'sma'
 		self.strategies['slow'] = Simple(20)
